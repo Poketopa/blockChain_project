@@ -17,21 +17,68 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
+    <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script>
+        // Web3 연결 및 컨트랙트 상호작용 설정
+        let web3;
+        let contract;
+        const contractAddress = 'YOUR_CONTRACT_ADDRESS'; // 배포된 스마트 컨트랙트 주소
+        const contractABI = [
+            // 여기에 배포한 스마트 컨트랙트의 ABI를 추가합니다
+        ];
+
+        window.addEventListener('load', async () => {
+            // 웹3와 연결
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    // 계정 요청
+                    await ethereum.request({ method: 'eth_requestAccounts' });
+                } catch (error) {
+                    console.error("User denied account access", error);
+                }
+            } else if (window.web3) {
+                web3 = new Web3(web3.currentProvider);
+            } else {
+                console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+            }
+
+            // 컨트랙트 인스턴스 생성
+            contract = new web3.eth.Contract(contractABI, contractAddress);
+        });
+
+        // 민팅 함수
+        async function mintTokens() {
+            const accounts = await web3.eth.getAccounts();
+            const mintAmount = document.getElementById('amount').value;
+
+            // 민팅 트랜잭션 호출
+            contract.methods.mint(accounts[0], web3.utils.toWei(mintAmount, 'ether')).send({ from: accounts[0] })
+                .on('transactionHash', function(hash) {
+                    console.log('Transaction Hash:', hash);
+                })
+                .on('receipt', function(receipt) {
+                    console.log('Receipt:', receipt);
+                    alert('Minting successful!');
+                })
+                .on('error', function(error, receipt) {
+                    console.error('Error:', error);
+                    alert('Minting failed!');
+                });
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Minting Page</h1>
         <p>Mint your tokens here.</p>
-        <form action="/mint" method="POST">
+        <form onsubmit="event.preventDefault(); mintTokens();">
             <div class="form-group">
-                <label for="token">Token Name:</label>
-                <input type="text" class="form-control" id="token" name="token" placeholder="Enter token name">
-            </div>
-            <div class="form-group">
-                <label for="amount">Amount:</label>
-                <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount">
+                <label for="amount">Amount to Mint:</label>
+                <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount to mint" required>
             </div>
             <button type="submit" class="btn btn-primary">Mint</button>
         </form>
@@ -39,4 +86,6 @@
     </div>
 </body>
 </html>
+
+
 
