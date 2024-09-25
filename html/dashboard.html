@@ -53,6 +53,12 @@
                         Authorization: `Bearer ${accessToken}`  // 액세스 토큰을 헤더에 추가
                     }
                 });
+
+            } else {
+                console.error('액세스 토큰이 없습니다.');
+                document.getElementById('user-info').innerText = '로그인이 필요합니다.';
+            }
+        });
     </script>
 </head>
 <body>
