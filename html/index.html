@@ -14,14 +14,35 @@
     <!-- Axios -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <!-- FormData (Browser built-in) -->
-    <!-- No need to include Form-Data explicitly in browsers as it's built-in. You can use it directly with JavaScript. -->
-
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 카카오톡 SDK 추가 -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
+    <script>
+        // 페이지 로딩 후 카카오 SDK 초기화
+        $(document).ready(function() {
+            // 카카오 SDK 초기화 (발급받은 JavaScript 키로 초기화합니다)
+            Kakao.init('977fb60304f38cb2010c792fb5b934f2'); // 카카오 자바스크립트 api 키
+            console.log(Kakao.isInitialized()); // SDK 초기화 여부 확인
+
+            // 카카오 로그인 함수
+            function kakaoLogin() {
+                Kakao.Auth.authorize({
+                    redirectUri: 'https://poketopa.github.io/blockChain_project/html/login.html'  // 설정한 리디렉션 URI
+                });
+            }
+
+            // 카카오 로그인 버튼 클릭 시 로그인 함수 호출
+            $('#kakao-login-btn').on('click', function() {
+                kakaoLogin();
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -33,13 +54,12 @@
             <li><a href="minting.html">Minting</a></li>
             <li><a href="transfer.html">Transfer</a></li>
         </ul>
-    </div>
 
-    <!-- Custom JS scripts can be added here -->
+        <!-- 카카오 로그인 버튼 -->
+        <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>
+        
+        <!-- 로그인된 정보 표시 영역 -->
+        <div id="login-info"></div>
+    </div>
 </body>
 </html>
-
-
-
-
-
