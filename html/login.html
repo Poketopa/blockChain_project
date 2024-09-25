@@ -46,9 +46,6 @@
                             console.log('사용자 정보 요청 실패:', error);
                             }
                         });
-
-                        // 로그인 성공 후 대시보드 페이지로 리다이렉션
-                        window.location.href = 'dashboard.html';
                     },
                     fail: function(err) {
                         console.error('카카오 로그인 실패:', err);
