@@ -35,8 +35,23 @@
                     success: function(authObj) {
                         console.log('액세스 토큰:', authObj.access_token);  // 액세스 토큰 출력
 
+                        // 이후 액세스 토큰을 사용하여 사용자 정보를 가져옵니다.
+                        Kakao.API.request({
+                            url: '/v2/user/me',
+                            success: function(res) {
+                                console.log('사용자 정보:', res);
+                                
+                            },
+                            fail: function(error) {
+                            console.log('사용자 정보 요청 실패:', error);
+                            }
+                        });
+
                         // 액세스 토큰을 로컬 스토리지에 저장
                         localStorage.setItem('kakao_access_token', authObj.access_token);
+
+                        // 사용자 정보를 로컬 스토리지에 저장합니다.
+                        localStorage.setItem('kakaoUserInfo', JSON.stringify(res));
 
                         // 로그인 성공 후 대시보드 페이지로 리다이렉션
                         window.location.href = 'dashboard.html';
