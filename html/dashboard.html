@@ -39,6 +39,11 @@
                     url: '/v2/user/me',
                     success: function(response) {
                         console.log('사용자 정보:', response);
+                        
+                        // 사용자 정보를 로컬 스토리지에 저장
+                        localStorage.setItem('kakao_user_info', JSON.stringify(response));
+                        
+                        // 사용자 정보를 화면에 표시
                         document.getElementById('user-info').innerText = `사용자 정보: ${JSON.stringify(response)}`;
                     },
                     fail: function(error) {
@@ -48,11 +53,6 @@
                         Authorization: `Bearer ${accessToken}`  // 액세스 토큰을 헤더에 추가
                     }
                 });
-            } else {
-                console.error('액세스 토큰이 없습니다.');
-                document.getElementById('user-info').innerText = '로그인이 필요합니다.';
-            }
-        });
     </script>
 </head>
 <body>
