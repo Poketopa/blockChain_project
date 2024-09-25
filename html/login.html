@@ -19,11 +19,36 @@
     
     <!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 카카오톡 SDK 추가 -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // 카카오 SDK 초기화 (발급받은 JavaScript 키로 초기화합니다)
+            Kakao.init('977fb60304f38cb2010c792fb5b934f2');  // 카카오 JavaScript api 키
+            console.log(Kakao.isInitialized());  // SDK 초기화 여부 확인
+
+            // 카카오 로그인 함수
+            function kakaoLogin() {
+                Kakao.Auth.authorize({
+                    redirectUri: 'https://poketopa.github.io/blockChain_project/html/dashboard.html'  // 리디렉션 URI 설정
+                });
+            }
+
+            // 카카오 로그인 버튼 클릭 이벤트
+            $('#kakao-login-btn').on('click', function() {
+                kakaoLogin();  // 로그인 함수 호출
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Login Page</h1>
         <p>Please enter your credentials to login.</p>
+
+        <!-- 일반 로그인 폼 -->
         <form action="/login" method="POST">
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -35,8 +60,14 @@
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
-        <a href="index.html">Back to Home</a>
+
+        <!-- 카카오톡 로그인 버튼 -->
+        <div style="margin-top: 20px;">
+            <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>
+        </div>
+
+        <!-- 홈으로 돌아가는 링크 -->
+        <a href="index.html" style="margin-top: 20px; display: block;">Back to Home</a>
     </div>
 </body>
 </html>
-
