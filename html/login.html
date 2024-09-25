@@ -26,13 +26,24 @@
     <script>
         $(document).ready(function() {
             // 카카오 SDK 초기화 (발급받은 JavaScript 키로 초기화합니다)
-            Kakao.init('977fb60304f38cb2010c792fb5b934f2');  // 카카오 JavaScript api 키
+            Kakao.init('977fb60304f38cb2010c792fb5b934f2');  // 카카오 JavaScript API 키
             console.log(Kakao.isInitialized());  // SDK 초기화 여부 확인
 
             // 카카오 로그인 함수
             function kakaoLogin() {
-                Kakao.Auth.authorize({
-                    redirectUri: 'https://poketopa.github.io/blockChain_project/html/dashboard.html'  // 리디렉션 URI 설정
+                Kakao.Auth.login({
+                    success: function(authObj) {
+                        console.log('액세스 토큰:', authObj.access_token);  // 액세스 토큰 출력
+
+                        // 액세스 토큰을 로컬 스토리지에 저장
+                        localStorage.setItem('kakao_access_token', authObj.access_token);
+
+                        // 로그인 성공 후 대시보드 페이지로 리다이렉션
+                        window.location.href = 'dashboard.html';
+                    },
+                    fail: function(err) {
+                        console.error('카카오 로그인 실패:', err);
+                    }
                 });
             }
 
