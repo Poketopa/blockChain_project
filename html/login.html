@@ -40,15 +40,15 @@
                             url: '/v2/user/me',
                             success: function(res) {
                                 console.log('사용자 정보:', res);
-                                
+
+                                // 사용자 id를 화면에 출력
+                                const userId = res.id;  // 사용자 id
+                                $('#user-id-display').text('사용자 ID: ' + userId);  // 사용자 ID를 표시
                             },
                             fail: function(error) {
                             console.log('사용자 정보 요청 실패:', error);
                             }
                         });
-
-                        // 로그인 성공 후 대시보드 페이지로 리다이렉션
-                        window.location.href = 'dashboard.html';
                     },
                     fail: function(err) {
                         console.error('카카오 로그인 실패:', err);
@@ -85,6 +85,9 @@
         <div style="margin-top: 20px;">
             <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>
         </div>
+
+        <!-- 사용자 ID 표시 영역 -->
+        <div id="user-id-display" style="margin-top: 20px; font-weight: bold;"></div>
 
         <!-- 홈으로 돌아가는 링크 -->
         <a href="index.html" style="margin-top: 20px; display: block;">Back to Home</a>
