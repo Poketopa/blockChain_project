@@ -19,13 +19,48 @@
     
     <!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 카카오톡 SDK 추가 -->
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // 로컬 스토리지에서 액세스 토큰 가져오기
+            const accessToken = localStorage.getItem('kakao_access_token');
+
+            if (accessToken) {
+                console.log('리다이렉트 후 가져온 액세스 토큰:', accessToken);
+
+                // Kakao SDK 초기화 (다시 초기화해도 문제없음)
+                Kakao.init('977fb60304f38cb2010c792fb5b934f2');
+
+                // 액세스 토큰을 사용하여 사용자 정보 요청
+                Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function(response) {
+                        console.log('사용자 정보:', response);
+                        document.getElementById('user-info').innerText = `사용자 정보: ${JSON.stringify(response)}`;
+                    },
+                    fail: function(error) {
+                        console.error('사용자 정보 요청 실패:', error);
+                    },
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`  // 액세스 토큰을 헤더에 추가
+                    }
+                });
+            } else {
+                console.error('액세스 토큰이 없습니다.');
+                document.getElementById('user-info').innerText = '로그인이 필요합니다.';
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Dashboard</h1>
         <p>Welcome to your dashboard!</p>
+        <div id="user-info">사용자 정보를 가져오는 중...</div>
         <a href="index.html">Back to Home</a>
     </div>
 </body>
 </html>
-
