@@ -1,5 +1,5 @@
-const test = artifacts.require('Test');
+const origAuthToken = artifacts.require('OrigAuthToken');
 
 module.exports = function (deployer) {
-  deployer.deploy(test);
+  deployer.deploy(origAuthToken);
 };
