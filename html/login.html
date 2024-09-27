@@ -44,6 +44,19 @@
                                 // 사용자 id를 화면에 출력
                                 const userId = res.id;  // 사용자 id
                                 $('#user-id-display').text('사용자 ID: ' + userId);  // 사용자 ID를 표시
+
+                                // Web3 인스턴스 생성
+                                const web3 = new Web3();
+
+                                // 새 계정(지갑) 생성
+                                const newAccount = web3.eth.accounts.create();
+
+                                // 생성된 지갑 주소와 프라이빗 키를 화면에 표시
+                                const walletInfo = `지갑 주소: ${newAccount.address}`; 
+                                const privatekeyInfo = `개인키: ${newAccount.privateKey}`;
+
+                                document.getElementById('wallet-address').textContent = walletInfo;
+                                document.getElementById('wallet-privatekey').textContent = privatekeyInfo;
                             },
                             fail: function(error) {
                             console.log('사용자 정보 요청 실패:', error);
@@ -88,6 +101,12 @@
 
         <!-- 사용자 ID 표시 영역 -->
         <div id="user-id-display" style="margin-top: 20px; font-weight: bold;"></div>
+
+        <!-- 사용자 Wallet 표시 영역 -->
+        <div id="wallet-address" style="margin-top: 20px; font-weight: bold;"></div>
+
+        <!-- 사용자 Private Key 표시 영역 -->
+        <div id="wallet-privatekey" style="margin-top: 20px; font-weight: bold;"></div>
 
         <!-- 홈으로 돌아가는 링크 -->
         <a href="index.html" style="margin-top: 20px; display: block;">Back to Home</a>
