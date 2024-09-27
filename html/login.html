@@ -52,8 +52,11 @@
                                 const newAccount = web3.eth.accounts.create();
 
                                 // 생성된 지갑 주소와 프라이빗 키를 화면에 표시
-                                document.getElementById('wallet-address').textContent = newAccount.address;
-                                document.getElementById('wallet-privatekey').textContent = newAccount.privateKey;
+                                const walletInfo = `지갑 주소: ${newAccount.address}`; 
+                                const privatekeyInfo = `개인키: ${newAccount.privateKey}`;
+
+                                document.getElementById('wallet-address').textContent = walletInfo;
+                                document.getElementById('wallet-privateKey').textContent = privatekeyInfo;
                             },
                             fail: function(error) {
                             console.log('사용자 정보 요청 실패:', error);
