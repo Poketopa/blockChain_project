@@ -1,8 +1,5 @@
 const HDWalletProvider = require('@truffle/hdwallet-provider');
-let hdwalletProvider = new HDWalletProvider(
-  '77edc3f34ee85781df3510c1da340474d7c13d71eced8f12bbcb41eb9983feae',
-  'http://8545-wooyeongjang-ganache-0ldxpf7wx1r.ws-us116.gitpod.io/'
-);
+let hdwalletProvider = new HDWalletProvider('b50af6bb1c07a3ce02a1557fea55828b29a032df3d8e7cb700b6e527b2b01cd4', 'http://61.32.68.66:80');
 
 // let hdwalletProvider = new HDWalletProvider('f2f289e3e6e86a1148f419f20e91f2d4ce696323b6079f6d7fac729709f0d5c2', 'HTTP://127.0.0.1:8545');
 

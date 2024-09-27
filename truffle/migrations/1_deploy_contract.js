@@ -1,5 +1,5 @@
-const StringDataType = artifacts.require('StringDataType');
+const test = artifacts.require('Test');
 
 module.exports = function (deployer) {
-  deployer.deploy(StringDataType);
+  deployer.deploy(test);
 };
