@@ -60,8 +60,5 @@ contract OrigAuthToken is ERC721URIStorage {
     function getAccount(string memory userId) public view returns(Account memory){
         return _account[userId];
     }
-    // function getUserAccount(string memory userId) public view returns (bytes32 privateKey, address publicKey) {
-    //     UserAccount memory userAccount = userAccounts[userId];
-    //     return (userAccount.privateKey, userAccount.publicKey);
-    // }
+
 }
