@@ -526,11 +526,11 @@
                         Kakao.API.request({
                             url: '/v2/user/me',
                             success: function(res) {
-                                const userId = res.id;
+                                const userId = res.id.toString();
                                 console.log('사용자 정보:', res);
 
                                 // 사용자 ID가 블록체인에 등록되어 있는지 확인
-                                contract.methods.isExist(userId.toString()).call()
+                                contract.methods.isExist(userId).call()
                                 .then(function(isExist) {
                                     if (!isExist) {
                                         // 지갑이 이미 생성되지 않았다면 새로 생성
@@ -544,7 +544,7 @@
                                         // 계정 생성 트랜잭션 호출
                                         web3.eth.getAccounts()
                                             .then(function(accounts) {
-                                                return contract.methods.createAccount(userId.toString(), walletAddress, privateKey)
+                                                return contract.methods.createAccount(userId, walletAddress, privateKey)
                                                     .send({ from: accounts[0] });
                                             })
                                             .then(function(receipt) {
@@ -557,7 +557,7 @@
                                             });
                                     } else {
                                         // 이미 등록된 계정 정보 가져오기
-                                        contract.methods.getAccount(userId.toString()).call()
+                                        contract.methods.getAccount(userId).call()
                                             .then(function(account) {
                                                 console.log('등록된 계정 정보:', account);
                                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + account.publickey;
