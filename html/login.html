@@ -33,7 +33,7 @@
             const web3 = new Web3('http://61.32.68.66:80');
             
             // 스마트 컨트랙트 주소 및 ABI 설정
-            const contractAddress = '0xA8A9C8A26A803825BF40D1810f81A7763b0988E8';  // 배포된 컨트랙트 주소
+            const contractAddress = '0x53f40fD4E98d3e70c14dcc4e3D00e2c59B9b567A';  // 배포된 컨트랙트 주소
             const contractABI = [{
       "inputs": [],
       "stateMutability": "nonpayable",
@@ -200,7 +200,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -219,7 +220,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -243,7 +245,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -256,7 +259,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -275,7 +279,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -363,7 +368,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -376,7 +382,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -395,7 +402,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -424,7 +432,7 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_to",
+          "name": "to",
           "type": "address"
         },
         {
@@ -437,6 +445,25 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getMyNFTs",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -455,7 +482,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -509,8 +537,9 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    }];
+      "type": "function",
+      "constant": true
+    }]
 
             // 스마트 컨트랙트 인스턴스 생성
             const contract = new web3.eth.Contract(contractABI, contractAddress);
