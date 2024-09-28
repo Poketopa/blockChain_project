@@ -41,7 +41,7 @@
     </div>
 
     <script>
-        const contractAddress = "0xA8A9C8A26A803825BF40D1810f81A7763b0988E8"; // Contract address는 필요
+        const contractAddress = "0x53f40fD4E98d3e70c14dcc4e3D00e2c59B9b567A"; // Contract address는 필요
 
         const abi = [
                     {
@@ -407,7 +407,7 @@
         // NFT 목록을 조회하는 함수
         async function loadNFTs(userAddress) {
             // Web3 인스턴스를 블록체인 노드에 연결
-            const web3 = new Web3(new Web3.providers.HttpProvider("http://61.32.68.66:80")); // 포트 번호 확인 필요
+            const web3 = new Web3(new Web3.providers.HttpProvider("http://192.168.10.39:80")); // 포트 번호 확인 필요
 
             try {
                 // 스마트 컨트랙트 인스턴스 생성
