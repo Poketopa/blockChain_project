@@ -19,14 +19,75 @@
     
     <!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
 </head>
 <body>
     <div class="container">
         <h1>Dashboard</h1>
         <p>Welcome to your dashboard!</p>
-        <div id="user-info">사용자 정보를 가져오는 중...</div>
+        
+        <!-- 사용자 주소 입력 및 조회 버튼 -->
+        <div class="form-group">
+            <label for="walletAddress">Enter Wallet Address:</label>
+            <input type="text" id="walletAddress" class="form-control" placeholder="Enter wallet address here">
+        </div>
+        <button id="fetchNFTsBtn" class="btn btn-primary">조회</button>
+        
+        <!-- NFT 목록을 표시할 영역 -->
+        <h3>Your NFT List</h3>
+        <div id="nftList">NFT 목록을 불러오는 중...</div>
+
         <a href="index.html">Back to Home</a>
     </div>
+
+    <script>
+        const contractAddress = "0xA8A9C8A26A803825BF40D1810f81A7763b0988E8";
+        const abi = [
+            // 제공된 ABI의 내용
+        ];
+
+        async function loadNFTs(userAddress) {
+            // 61.32.68.66에 있는 RPC 엔드포인트로 Web3 인스턴스 생성
+            const web3 = new Web3(new Web3.providers.HttpProvider("http://61.32.68.66:80")); // 포트 번호는 적절히 변경 필요
+
+            try {
+                const nftContract = new web3.eth.Contract(abi, contractAddress);
+
+                // 사용자 NFT의 개수 조회
+                const balance = await nftContract.methods.balanceOf(userAddress).call();
+                const nftListDiv = document.getElementById("nftList");
+
+                if (balance > 0) {
+                    nftListDiv.innerHTML = ''; // 기존 내용을 초기화
+
+                    // 각 NFT의 ID와 URI를 조회하여 화면에 표시
+                    for (let i = 0; i < balance; i++) {
+                        const tokenId = await nftContract.methods.tokenOfOwnerByIndex(userAddress, i).call();
+                        const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
+                        
+                        const nftElement = document.createElement("div");
+                        nftElement.innerHTML = `<strong>Token ID:</strong> ${tokenId} <br><strong>Token URI:</strong> <a href="${tokenURI}" target="_blank">${tokenURI}</a>`;
+                        nftListDiv.appendChild(nftElement);
+                    }
+                } else {
+                    nftListDiv.innerHTML = '소유한 NFT가 없습니다.';
+                }
+            } catch (error) {
+                console.error("Error fetching NFTs:", error);
+                document.getElementById("nftList").innerHTML = 'NFT를 가져오는 중 오류가 발생했습니다.';
+            }
+        }
+
+        // 조회 버튼 클릭 이벤트 리스너
+        document.getElementById("fetchNFTsBtn").addEventListener("click", function() {
+            const userAddress = document.getElementById("walletAddress").value.trim();
+            
+            if (userAddress) {
+                document.getElementById("nftList").innerHTML = 'NFT 목록을 불러오는 중...';
+                loadNFTs(userAddress);
+            } else {
+                alert("지갑 주소를 입력해 주세요.");
+            }
+        });
+    </script>
 </body>
 </html>
