@@ -13,6 +13,9 @@ contract OrigAuthToken is ERC721URIStorage {
     //ID 존재 여부 확인
     mapping(string => bool) private _accountExists;
 
+    //user별 NFT조회
+    mapping(address=>uint256[]) private _ownerNFTs;
+
     //계정 관리
     mapping(string => Account) private _account;
 
@@ -29,15 +32,26 @@ contract OrigAuthToken is ERC721URIStorage {
     }
 
     //NFT 민팅
-    function mintNFT(address _to, string memory _tokenURI) public{
+    function mintNFT(address to, string memory _tokenURI) public{
         _tokenId.increment();
         uint256 newTokenId = _tokenId.current();
-        _mint(_to, newTokenId);        
+        _mint(to, newTokenId);        
         //metadata가 저장된 ipfs값
         _setTokenURI(newTokenId, _tokenURI);
-        emit minting(_to, newTokenId);
+        _ownerNFTs[to].push(newTokenId);
+        emit minting(msg.sender, newTokenId);
     }
 
+    //NFT조회
+    function getMyNFTs() public view returns(uint256[] memory, string[] memory){
+        uint256[] memory tokenIds = _ownerNFTs[msg.sender];
+        string[] memory tokenURIs = new string[](tokenIds.length);
+
+        for(uint256 i=0; i < tokenIds.length; i++){
+            tokenURIs[i]=tokenURI(tokenIds[i]);
+        }
+        return (tokenIds, tokenURIs);
+    }
     //계정 존재 여부 확인하는 함수
     function isExist(string memory userId) public view returns(bool){
         return _accountExists[userId];
@@ -56,7 +70,7 @@ contract OrigAuthToken is ERC721URIStorage {
     }
 
     
-    //user계정 조회: userId => publickey or privatekey
+    //user계정 조회
     function getAccount(string memory userId) public view returns(Account memory){
         return _account[userId];
     }
