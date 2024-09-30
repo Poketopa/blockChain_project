@@ -34,14 +34,14 @@
             
             // 스마트 컨트랙트 주소 및 ABI 설정
             const contractAddress = '0xA8A9C8A26A803825BF40D1810f81A7763b0988E8';  // 배포된 컨트랙트 주소
-            let abi = null;
+            let contractABI = null;
 
             // ABI를 JSON 파일에서 로드하는 함수
             async function loadABI() {
                 try {
                     const response = await fetch('../js/OrigAuthToken.json'); // ABI JSON 파일 경로
                     const data = await response.json();
-                    abi = data.abi; // ABI 값을 저장
+                    contractABI = data.abi; // ABI 값을 저장
                     console.log('ABI Loaded:', abi);
                 } catch (error) {
                     console.error('ABI 로드 중 오류 발생:', error);
