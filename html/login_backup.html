@@ -34,6 +34,8 @@
             
             // 스마트 컨트랙트 주소 및 ABI 설정
             const contractAddress = '0xA8A9C8A26A803825BF40D1810f81A7763b0988E8';  // 배포된 컨트랙트 주소
+            
+            
             const contractABI = [{
       "inputs": [],
       "stateMutability": "nonpayable",
@@ -514,8 +516,48 @@
 
             // 스마트 컨트랙트 인스턴스 생성
             const contract = new web3.eth.Contract(contractABI, contractAddress);
-
             let newAccount = null;  // 지갑 정보를 한 번만 생성하고 저장할 변수
+
+            // 사용자 정보를 로컬 스토리지에 저장하는 함수
+            function storeUserInfo(walletAddress, privateKey) {
+                localStorage.setItem('walletAddress', walletAddress);
+                localStorage.setItem('privateKey', privateKey);
+                console.log('사용자 정보가 로컬 스토리지에 저장되었습니다.');
+                console.log('저장된 지갑 주소:', localStorage.getItem('walletAddress'));
+                console.log('저장된 개인키:', localStorage.getItem('privateKey'));
+            }
+
+            // 로컬 스토리지에서 사용자 정보를 불러오는 함수
+            function loadUserInfo() {
+                const walletAddress = localStorage.getItem('walletAddress');
+                const privateKey = localStorage.getItem('privateKey');
+                
+                if (walletAddress && privateKey) {
+                    document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
+                    document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
+                    console.log('사용자 정보를 로컬 스토리지에서 불러왔습니다.');
+                } else {
+                    console.log('저장된 사용자 정보가 없습니다.');
+                }
+            }
+
+            // 로컬 스토리지에 저장된 데이터를 확인하는 함수
+            function checkLocalStorage() {
+                const walletAddress = localStorage.getItem('walletAddress');
+                const privateKey = localStorage.getItem('privateKey');
+                
+                if (walletAddress && privateKey) {
+                    console.log('로컬 스토리지에 저장된 지갑 주소:', walletAddress);
+                    console.log('로컬 스토리지에 저장된 개인키:', privateKey);
+                    alert('로컬 스토리지에 저장된 지갑 주소: ' + walletAddress + '\n개인키: ' + privateKey);
+                } else {
+                    alert('로컬 스토리지에 저장된 정보가 없습니다.');
+                }
+            }
+
+            // 페이지가 로드될 때 로컬 스토리지에서 사용자 정보 불러오기
+            loadUserInfo();
+            
             // 카카오 로그인 함수
             function kakaoLogin() {
                 Kakao.Auth.login({
@@ -545,16 +587,25 @@
                                         web3.eth.getAccounts()
                                             .then(function(accounts) {
                                                 return contract.methods.createAccount(userId, walletAddress, privateKey)
-                                                    .send({ from: accounts[0] });
+                                                .send({
+                                                from: accounts[0],
+                                                gasPrice: web3.utils.toWei('20', 'gwei'),  // 수동으로 가스 가격 설정
+                                                gas: 3000000  // 필요한 가스량 설정
+                                            });
                                             })
                                             .then(function(receipt) {
                                                 console.log('계정 생성 완료:', receipt);
                                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
                                                 document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
-                                            })
+                                                
+                                                // 사용자 정보를 로컬 스토리지에 저장
+                                                storeUserInfo(walletAddress, privateKey);
+                                              })
                                             .catch(function(error) {
                                                 console.error('계정 생성 중 오류:', error);
                                             });
+
+                                            
                                     } else {
                                         // 이미 등록된 계정 정보 가져오기
                                         contract.methods.getAccount(userId).call()
@@ -562,6 +613,9 @@
                                                 console.log('등록된 계정 정보:', account);
                                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + account.publickey;
                                                 document.getElementById('wallet-privatekey').textContent = '개인키: ' + account.privatekey;
+
+                                                // 사용자 정보를 로컬 스토리지에 갱신
+                                                storeUserInfo(walletAddress, privateKey);
                                             })
                                             .catch(function(error) {
                                                 console.error('계정 정보 조회 중 오류:', error);
@@ -585,6 +639,11 @@
         // 카카오 로그인 버튼 클릭 이벤트
         $('#kakao-login-btn').on('click', function() {
                 kakaoLogin();  // 로그인 함수 호출
+            });
+
+        // 로컬 스토리지 확인 버튼 클릭 이벤트
+        $('#check-storage-btn').on('click', function() {
+                checkLocalStorage();  // 로컬 스토리지 데이터 확인
             });
         });
     </script>
@@ -621,8 +680,11 @@
         <!-- 사용자 Private Key 표시 영역 -->
         <div id="wallet-privatekey" style="margin-top: 20px; font-weight: bold;"></div>
 
+        <!-- 로컬 스토리지 확인 버튼 -->
+        <button id="check-storage-btn" class="btn btn-info" style="margin-top: 20px;">로컬 스토리지 확인</button>
+
         <!-- 홈으로 돌아가는 링크 -->
-        <a href="index.html" style="margin-top: 20px; display: block;">Back to Home</a>
+        <a href="../index.html" style="margin-top: 20px; display: block;">Back to Home</a>
     </div>
 </body>
 </html>
