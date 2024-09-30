@@ -521,6 +521,8 @@
                 localStorage.setItem('walletAddress', walletAddress);
                 localStorage.setItem('privateKey', privateKey);
                 console.log('사용자 정보가 로컬 스토리지에 저장되었습니다.');
+                console.log('저장된 지갑 주소:', localStorage.getItem('walletAddress'));
+                console.log('저장된 개인키:', localStorage.getItem('privateKey'));
             }
 
             // 로컬 스토리지에서 사용자 정보를 불러오는 함수
@@ -534,6 +536,20 @@
                     console.log('사용자 정보를 로컬 스토리지에서 불러왔습니다.');
                 } else {
                     console.log('저장된 사용자 정보가 없습니다.');
+                }
+            }
+
+            // 로컬 스토리지에 저장된 데이터를 확인하는 함수
+            function checkLocalStorage() {
+                const walletAddress = localStorage.getItem('walletAddress');
+                const privateKey = localStorage.getItem('privateKey');
+                
+                if (walletAddress && privateKey) {
+                    console.log('로컬 스토리지에 저장된 지갑 주소:', walletAddress);
+                    console.log('로컬 스토리지에 저장된 개인키:', privateKey);
+                    alert('로컬 스토리지에 저장된 지갑 주소: ' + walletAddress + '\n개인키: ' + privateKey);
+                } else {
+                    alert('로컬 스토리지에 저장된 정보가 없습니다.');
                 }
             }
 
