@@ -29,18 +29,26 @@
             <label for="walletAddress">지갑 주소 입력:</label>
             <input type="text" id="walletAddress" class="form-control" placeholder="지갑 주소를 입력하세요">
         </div>
-        <button id="checkNFTBtn" class="btn btn-primary">NFT 확인</button>
+        <button id="checkWalletBtn" class="btn btn-primary">지갑 확인</button>
         
-        <!-- NFT ID 및 URI 배열을 표시할 영역 -->
-        <h3>결과</h3>
-        <div id="nftStatus"></div>
+        <!-- 홈으로 돌아가기 버튼 -->
+        <div class="my-4 text-right">
+            <a href="../index.html" class="btn btn-secondary">홈으로 돌아가기</a>
+        </div>
 
-        <a href="../index.html">홈으로 돌아가기</a>
+        <!-- 수직 구분선 -->
+        <hr class="my-4">
+
+        <!-- NFT 이미지가 표시될 영역 -->
+        <div id="nftGallery" class="row"></div>
     </div>
 
     <script>
         const contractAddress = "0x53f40fD4E98d3e70c14dcc4e3D00e2c59B9b567A"; // 스마트 컨트랙트 주소
         let abi = null;
+        let tokenIds = [];
+        let tokenURIs = [];
+        const pinataBaseUrl = "https://chocolate-elegant-cougar-341.mypinata.cloud/ipfs/";
 
         // 이더리움 주소 유효성 검사 함수
         function isValidEthereumAddress(address) {
@@ -60,12 +68,13 @@
         }
 
         // Web3 인스턴스를 블록체인 노드에 연결
+        //const web3 = new Web3(new Web3.providers.HttpProvider("http://192.168.10.39:80")); // 포트 번호는 환경에 맞게 수정
         const web3 = new Web3(new Web3.providers.HttpProvider("http://61.32.68.66:80")); // 포트 번호는 환경에 맞게 수정
 
-
-        // NFT ID 및 URI 배열을 확인하는 함수
-        async function checkNFT(userAddress) {
-            const nftStatusDiv = document.getElementById("nftStatus");
+        // 지갑을 확인하고 NFT 목록을 가져오는 함수
+        async function checkWallet(userAddress) {
+            const nftGalleryDiv = document.getElementById("nftGallery");
+            nftGalleryDiv.innerHTML = ''; // 기존 내용 초기화
 
             try {
                 // 스마트 컨트랙트 인스턴스 생성
@@ -74,43 +83,55 @@
                 // 사용자의 NFT ID와 URI 조회
                 const result = await nftContract.methods.getMyNFTs().call({ from: userAddress });
 
-                const tokenIds = result[0];
-                const tokenURIs = result[1];
+                tokenIds = result[0];
+                tokenURIs = result[1];
 
                 if (tokenIds.length > 0) {
-                    // NFT ID와 URI 배열을 출력
-                    nftStatusDiv.innerHTML = `
-                        <strong>이 주소가 보유한 NFT ID 목록:</strong> [${tokenIds.join(', ')}] <br>
-                        <strong>이 주소가 보유한 NFT URI 목록:</strong> [${tokenURIs.join(', ')}]
-                    `;
+                    // 각 NFT의 이미지를 가져와 가로 3개씩 출력
+                    for (let i = 0; i < tokenIds.length; i++) {
+                        const selectedTokenURI = tokenURIs[i];
+                        const finalUrl = pinataBaseUrl + selectedTokenURI;
+
+                        // NFT 메타데이터에서 이미지 URL 가져오기
+                        const response = await axios.get(finalUrl);
+                        const nftData = response.data;
+                        const imageUrl = pinataBaseUrl + nftData.image.replace("ipfs://", "");
+
+                        // 이미지 HTML을 가로 3개씩 배치 (Bootstrap 컬럼 사용)
+                        nftGalleryDiv.innerHTML += `
+                            <div class="col-md-4">
+                                <img src="${imageUrl}" alt="${nftData.name}" class="img-fluid mt-3" style="max-width: 100%; height: auto;">
+                            </div>
+                        `;
+                    }
                 } else {
-                    nftStatusDiv.innerHTML = '이 주소는 NFT를 보유하고 있지 않습니다.';
+                    nftGalleryDiv.innerHTML = '이 주소는 NFT를 보유하고 있지 않습니다.';
                 }
             } catch (error) {
-                console.error("NFT 확인 중 오류 발생:", error);
-                nftStatusDiv.innerHTML = 'NFT 확인 중 오류가 발생했습니다.';
+                console.error("지갑 확인 중 오류 발생:", error);
+                nftGalleryDiv.innerHTML = '지갑 확인 중 오류가 발생했습니다.';
             }
         }
 
-        // 조회 버튼 클릭 이벤트 리스너
-        document.getElementById("checkNFTBtn").addEventListener("click", async function() {
+        // 지갑 확인 버튼 클릭 이벤트 리스너
+        document.getElementById("checkWalletBtn").addEventListener("click", async function() {
             const userAddress = document.getElementById("walletAddress").value.trim();
 
             // 지갑 주소 유효성 검사 후 NFT 여부 확인
             if (isValidEthereumAddress(userAddress)) {
-                document.getElementById("nftStatus").innerHTML = `
+                document.getElementById("nftGallery").innerHTML = `
                     <div class="spinner-border text-primary" role="status">
                         <span class="sr-only">Loading...</span>
                     </div>
                 `;
 
-                // ABI 로드 후 NFT 확인
+                // ABI 로드 후 지갑 확인
                 if (!abi) {
                     await loadABI(); // ABI가 로드되지 않았다면 먼저 로드
                 }
 
                 if (abi) {
-                    checkNFT(userAddress);
+                    checkWallet(userAddress);
                 }
             } else {
                 alert("유효하지 않은 지갑 주소입니다. 다시 확인해 주세요.");
