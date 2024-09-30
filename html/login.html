@@ -34,7 +34,7 @@
             
             // 스마트 컨트랙트 주소 및 ABI 설정
             const contractAddress = '0xA8A9C8A26A803825BF40D1810f81A7763b0988E8';  // 배포된 컨트랙트 주소
-            let abi = null
+            let abi = null;
 
             // ABI를 JSON 파일에서 로드하는 함수
             async function loadABI() {
@@ -47,6 +47,9 @@
                     console.error('ABI 로드 중 오류 발생:', error);
                 }
             }
+
+            // ABI를 로드하는 함수 호출 (로드 완료 후 계약 초기화 진행)
+            loadABI();
 
             // 스마트 컨트랙트 인스턴스 생성
             const contract = new web3.eth.Contract(contractABI, contractAddress);
@@ -170,9 +173,6 @@
                 }
             });
         }
-
-        // ABI를 로드하는 함수 호출 (로드 완료 후 계약 초기화 진행)
-        loadABI();
 
         // 카카오 로그인 버튼 클릭 이벤트
         $('#kakao-login-btn').on('click', function() {
