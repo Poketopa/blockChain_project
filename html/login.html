@@ -604,13 +604,17 @@
                                             .catch(function(error) {
                                                 console.error('계정 생성 중 오류:', error);
                                             });
-
                                             
                                     } else {
                                         // 이미 등록된 계정 정보 가져오기
                                         contract.methods.getAccount(userId).call()
                                             .then(function(account) {
                                                 console.log('등록된 계정 정보:', account);
+
+                                                // 여기서 가져온 값을 walletAddress와 privateKey로 설정
+                                                const walletAddress = account.publickey;
+                                                const privateKey = account.privatekey;
+
                                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + account.publickey;
                                                 document.getElementById('wallet-privatekey').textContent = '개인키: ' + account.privatekey;
 
