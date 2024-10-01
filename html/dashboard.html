@@ -65,6 +65,7 @@
 	    <div id="nftGalleryUser" class="row"></div>
 	</div>
 	
+
 <script>
     const contractAddress = "0x53f40fD4E98d3e70c14dcc4e3D00e2c59B9b567A"; // 스마트 컨트랙트 주소
     let abi = null;
@@ -98,10 +99,7 @@
         nftGalleryDiv.innerHTML = ''; // 기존 내용 초기화
 
         try {
-            // 스마트 컨트랙트 인스턴스 생성
             const nftContract = new web3.eth.Contract(abi, contractAddress);
-
-            // 사용자의 NFT ID와 URI 조회
             const result = await nftContract.methods.getMyNFTs().call({ from: userAddress });
 
             tokenIds = result[0];
@@ -113,7 +111,6 @@
                     const selectedTokenURI = tokenURIs[i];
                     const finalUrl = pinataBaseUrl + selectedTokenURI;
 
-                    // NFT 메타데이터에서 이미지 URL 가져오기
                     const response = await axios.get(finalUrl);
                     const nftData = response.data;
                     const imageUrl = pinataBaseUrl + nftData.image.replace("ipfs://", "");
@@ -125,12 +122,10 @@
                         </div>
                     `;
                 }
-                // NFT가 있으면 메시지 숨기기
                 document.getElementById("userMessage").style.display = "none";
                 document.getElementById("noNFTMessage").style.display = "none";
                 nftGalleryDiv.style.display = "flex";
             } else {
-                // NFT가 없으면 "NFT가 없습니다" 메시지 표시
                 document.getElementById("noNFTMessage").style.display = "block";
                 nftGalleryDiv.style.display = "none";
             }
@@ -141,40 +136,41 @@
     }
 
     // 페이지 로드 시 기본적으로 사용자 모드를 보여주고 지갑 확인
-    window.onload = async function() {
-        document.getElementById("userMode").style.display = "block";  // 사용자 모드를 기본으로 표시
-        document.getElementById("devMode").style.display = "none";  // 개발자 모드는 숨기기
-        
-        const storedWalletAddress = localStorage.getItem("walletAddress");
+window.onload = async function() {
+    document.getElementById("userMode").style.display = "block";  // 사용자 모드를 기본으로 표시
+    document.getElementById("devMode").style.display = "none";  // 개발자 모드는 숨기기
+    
+    const storedWalletAddress = localStorage.getItem("walletAddress");
 
-        if (storedWalletAddress && isValidEthereumAddress(storedWalletAddress)) {
-            // 지갑 주소가 있으면 자동으로 지갑 확인 수행
-            document.getElementById("nftGalleryUser").innerHTML = `
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            `;
+    if (storedWalletAddress && isValidEthereumAddress(storedWalletAddress)) {
+        // 지갑 주소가 있으면 자동으로 지갑 확인 수행
+        document.getElementById("nftGalleryUser").innerHTML = `
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        `;
 
-            // ABI 로드 후 지갑 확인
-            if (!abi) {
-                await loadABI();
-            }
-            if (abi) {
-                checkWallet(storedWalletAddress, true);
-            }
-        } else {
-            // 지갑 주소가 없으면 로그인 메시지 표시
-            document.getElementById("userMessage").style.display = "block";
-            document.getElementById("nftGalleryUser").style.display = "none";
-            document.getElementById("noNFTMessage").style.display = "none";
+        // ABI 로드 후 지갑 확인
+        if (!abi) {
+            await loadABI();
         }
-    };
+        if (abi) {
+            checkWallet(storedWalletAddress, true); // 사용자 모드에서 호출
+        }
+    } else {
+        // **지갑 주소가 없으면 로그인 메시지 바로 표시**
+        document.getElementById("userMessage").style.display = "block";
+        document.getElementById("nftGalleryUser").style.display = "none";
+        document.getElementById("noNFTMessage").style.display = "none";
+    }
 
-    // 개발자 모드 버튼 클릭 시 개발자 모드로 전환
+    // 개발자 모드 버튼 리스너를 페이지 로드 시 활성화1154
     document.getElementById("devModeBtn").addEventListener("click", function() {
-        document.getElementById("userMode").style.display = "none";  // 사용자 모드 숨기기
-        document.getElementById("devMode").style.display = "block";  // 개발자 모드 표시
+        // 개발자 모드로 전환
+        document.getElementById("devMode").style.display = "block";
+        document.getElementById("userMode").style.display = "none";
     });
+};
 
     // 지갑 확인 버튼 클릭 이벤트 리스너 (개발자 모드)
     document.getElementById("checkWalletBtn").addEventListener("click", async function() {
@@ -211,7 +207,7 @@
     // 페이지 로드 시 ABI 로드
     loadABI();
 </script>
-
+	
 
 
 </body>
