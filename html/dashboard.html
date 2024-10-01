@@ -40,6 +40,8 @@
 	        <div class="my-4 text-right">
 	            <a href="../index.html" class="btn btn-secondary">홈으로 돌아가기</a>
 		    <button id="checkLocalStorageBtn" class="btn btn-info ml-2">로컬 스토리지 확인하기</button>
+    		    <button id="clearLocalStorageBtn" class="btn btn-danger ml-2">로컬 스토리지 삭제</button>
+		    
 	        </div>
 	
 	        <!-- 수직 구분선 -->
@@ -219,6 +221,15 @@ document.getElementById("userModeBtn").addEventListener("click", function() {
 
         alert(`Wallet Address: ${walletAddress}\nPrivate Key: ${privateKey}`);
     });
+
+// 로컬 스토리지 삭제 버튼 클릭 이벤트 리스너
+document.getElementById("clearLocalStorageBtn").addEventListener("click", function() {
+    localStorage.removeItem("walletAddress");
+    localStorage.removeItem("privateKey");
+
+    alert("로컬 스토리지가 삭제되었습니다.");
+});
+
 
     // 페이지 로드 시 ABI 로드
     loadABI();
