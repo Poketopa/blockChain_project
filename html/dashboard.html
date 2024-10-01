@@ -23,28 +23,66 @@
 <body>
     <div class="container">
         <h1>OrigAuthToken NFT 조회</h1>
+	<div class="text-right mb-3">
+	    <button id="userModeBtn" class="btn btn-success">사용자 모드</button>
+	    <button id="devModeBtn" class="btn btn-primary">개발자 모드</button>
+	</div>
 
         <!-- 사용자 주소 입력 및 조회 버튼 -->
-        <div class="form-group">
-            <label for="walletAddress">지갑 주소 입력:</label>
-            <input type="text" id="walletAddress" class="form-control" placeholder="지갑 주소를 입력하세요">
-        </div>
-        <button id="checkWalletBtn" class="btn btn-primary">지갑 확인</button>
-        
-        <!-- 홈으로 돌아가기 버튼 -->
-        <div class="my-4 text-right">
-            <a href="../index.html" class="btn btn-secondary">홈으로 돌아가기</a>
-	    <button id="checkLocalStorageBtn" class="btn btn-info ml-2">로컬 스토리지 확인하기</button>
+	<div id="devMode" style="display: none;">
+	        <div class="form-group">
+	            <label for="walletAddress">지갑 주소 입력:</label>
+	            <input type="text" id="walletAddress" class="form-control" placeholder="지갑 주소를 입력하세요">
+	        </div>
+	        <button id="checkWalletBtn" class="btn btn-primary">지갑 확인</button>
+	        
+	        <!-- 홈으로 돌아가기 버튼 -->
+	        <div class="my-4 text-right">
+	            <a href="../index.html" class="btn btn-secondary">홈으로 돌아가기</a>
+		    <button id="checkLocalStorageBtn" class="btn btn-info ml-2">로컬 스토리지 확인하기</button>
+	        </div>
+	
+	        <!-- 수직 구분선 -->
+	        <hr class="my-4">
+	
+	        <!-- NFT 이미지가 표시될 영역 -->
+	        <div id="nftGallery" class="row"></div>
+	    </div>
         </div>
 
-        <!-- 수직 구분선 -->
-        <hr class="my-4">
-
-        <!-- NFT 이미지가 표시될 영역 -->
-        <div id="nftGallery" class="row"></div>
-    </div>
+	<div id="userMode" style="display: none;">
+	    <div id="userMessage" class="alert alert-warning" role="alert" style="display: none;">
+	        카카오 로그인을 해주세요
+	    </div>
+	
+	    <!-- NFT 이미지가 표시될 영역 -->
+	    <div id="nftGalleryUser" class="row"></div>
+	</div>
+	
 
     <script>
+// 모드 전환 버튼 클릭 이벤트
+	document.getElementById("userModeBtn").addEventListener("click", function() {
+	    // 사용자 모드로 전환
+	    document.getElementById("devMode").style.display = "none";
+	    document.getElementById("userMode").style.display = "block";
+	    const storedWalletAddress = localStorage.getItem("walletAddress");
+	
+	    if (storedWalletAddress && isValidEthereumAddress(storedWalletAddress)) {
+	        if (!abi) loadABI().then(() => checkWallet(storedWalletAddress, true));
+	        else checkWallet(storedWalletAddress, true);
+	    } else {
+	        document.getElementById("userMessage").style.display = "block";
+	    }
+	});
+
+	document.getElementById("devModeBtn").addEventListener("click", function() {
+	    // 개발자 모드로 전환
+	    document.getElementById("devMode").style.display = "block";
+	    document.getElementById("userMode").style.display = "none";
+	});
+
+
         const contractAddress = "0x53f40fD4E98d3e70c14dcc4e3D00e2c59B9b567A"; // 스마트 컨트랙트 주소
         let abi = null;
         let tokenIds = [];
