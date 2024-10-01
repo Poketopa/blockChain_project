@@ -139,6 +139,33 @@
             }
         });
 
+	// 페이지 로드 시 로컬 스토리지 값 자동 입력 및 지갑 확인
+	window.onload = async function() {
+		const storedWalletAddress = localStorage.getItem("walletAddress");
+
+		if (storedWalletAddress) {
+			// 지갑 주소 입력 필드에 로컬 스토리지 값 자동 입력
+			document.getElementById("walletAddress").value = storedWalletAddress;
+
+			// 자동으로 지갑 확인 수행
+			if (isValidEthereumAddress(storedWalletAddress)) {
+	   			document.getElementById("nftGallery").innerHTML = `
+	   				<div class="spinner-border text-primary" role="status">
+	   					<span class="sr-only">Loading...</span>
+	   				</div>
+				`;
+
+	                	// ABI 로드 후 자동으로 지갑 확인
+				if (!abi) {
+					await loadABI();
+				}
+				if (abi) {
+					checkWallet(storedWalletAddress);
+				}
+			}
+		}
+	};
+
 
 	    // 로컬 스토리지 확인 버튼 클릭 이벤트 리스너
 	    document.getElementById("checkLocalStorageBtn").addEventListener("click", function() {
@@ -148,6 +175,7 @@
 		// 팝업창으로 로컬 스토리지에 저장된 값 보여주기
 		alert(`Wallet Address: ${walletAddress}\nPrivate Key: ${privateKey}`);
 	});
+	
 
         // 페이지 로드 시 ABI 로드
         loadABI();
