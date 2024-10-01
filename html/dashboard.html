@@ -34,6 +34,7 @@
         <!-- 홈으로 돌아가기 버튼 -->
         <div class="my-4 text-right">
             <a href="../index.html" class="btn btn-secondary">홈으로 돌아가기</a>
+	    <button id="checkLocalStorageBtn" class="btn btn-info ml-2">로컬 스토리지 확인하기</button>
         </div>
 
         <!-- 수직 구분선 -->
@@ -137,6 +138,16 @@
                 alert("유효하지 않은 지갑 주소입니다. 다시 확인해 주세요.");
             }
         });
+
+
+	    // 로컬 스토리지 확인 버튼 클릭 이벤트 리스너
+	    document.getElementById("checkLocalStorageBtn").addEventListener("click", function() {
+			    const walletAddress = localStorage.getItem("walletAddress");
+			    const privateKey = localStorage.getItem("privateKey");
+
+		// 팝업창으로 로컬 스토리지에 저장된 값 보여주기
+		alert(`Wallet Address: ${walletAddress}\nPrivate Key: ${privateKey}`);
+	});
 
         // 페이지 로드 시 ABI 로드
         loadABI();
