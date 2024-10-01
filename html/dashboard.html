@@ -56,6 +56,9 @@
 	    <!-- 로그인 메시지 -->
 	    <div id="userMessage" class="alert alert-warning" role="alert" style="display: none;">
 	        로그인 해주세요
+    <br>
+    <a href="./login.html" class="btn btn-link">로그인 페이지로 이동</a>
+</div>		
 	    </div>
 
 	    <!-- NFT가 없을 때 보여줄 메시지 -->
@@ -174,6 +177,12 @@ document.getElementById("devModeBtn").addEventListener("click", function() {
     document.getElementById("userMode").style.display = "none";
     document.getElementById("devModeBtn").style.display = "none";  // 개발자 모드 버튼 숨기기
     document.getElementById("userModeBtn").style.display = "block";  // 사용자 모드 전환 버튼 보이기
+
+    // 로컬 스토리지에서 지갑 주소 자동 입력
+    const storedWalletAddress = localStorage.getItem("walletAddress");
+    if (storedWalletAddress && isValidEthereumAddress(storedWalletAddress)) {
+        document.getElementById("walletAddress").value = storedWalletAddress; // 지갑 주소 자동 입력
+    }		
 });
 
 // 사용자 모드 버튼 리스너
