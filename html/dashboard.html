@@ -24,8 +24,8 @@
     <div class="container">
         <h1>OrigAuthToken NFT 조회</h1>
 	<div class="text-right mb-3">
-	    <button id="userModeBtn" class="btn btn-success">사용자 모드</button>
-	    <button id="devModeBtn" class="btn btn-primary">개발자 모드</button>
+	    <button id="userModeBtn" class="btn btn-success" style="display: none;">사용자 모드 전환</button>
+	    <button id="devModeBtn" class="btn btn-primary">개발자 모드 전환</button>
 	</div>
 
         <!-- 사용자 주소 입력 및 조회 버튼 -->
@@ -139,7 +139,9 @@
 window.onload = async function() {
     document.getElementById("userMode").style.display = "block";  // 사용자 모드를 기본으로 표시
     document.getElementById("devMode").style.display = "none";  // 개발자 모드는 숨기기
-    
+    document.getElementById("userModeBtn").style.display = "none";  // 사용자 모드 전환 버튼은 숨기기
+    document.getElementById("devModeBtn").style.display = "block";  // 개발자 모드 전환 버튼은 표시
+ 
     const storedWalletAddress = localStorage.getItem("walletAddress");
 
     if (storedWalletAddress && isValidEthereumAddress(storedWalletAddress)) {
@@ -163,14 +165,28 @@ window.onload = async function() {
         document.getElementById("nftGalleryUser").style.display = "none";
         document.getElementById("noNFTMessage").style.display = "none";
     }
+// 개발자 모드 버튼 리스너
+document.getElementById("devModeBtn").addEventListener("click", function() {
+    // 개발자 모드로 전환
+    document.getElementById("devMode").style.display = "block";
+    document.getElementById("userMode").style.display = "none";
+    document.getElementById("devModeBtn").style.display = "none";  // 개발자 모드 버튼 숨기기
+    document.getElementById("userModeBtn").style.display = "block";  // 사용자 모드 전환 버튼 보이기
+});
 
-    // 개발자 모드 버튼 리스너를 페이지 로드 시 활성화1154
-    document.getElementById("devModeBtn").addEventListener("click", function() {
-        // 개발자 모드로 전환
-        document.getElementById("devMode").style.display = "block";
-        document.getElementById("userMode").style.display = "none";
-    });
+// 사용자 모드 버튼 리스너
+document.getElementById("userModeBtn").addEventListener("click", function() {
+    // 사용자 모드로 전환
+    document.getElementById("userMode").style.display = "block";
+    document.getElementById("devMode").style.display = "none";
+    document.getElementById("userModeBtn").style.display = "none";  // 사용자 모드 버튼 숨기기
+    document.getElementById("devModeBtn").style.display = "block";  // 개발자 모드 전환 버튼 보이기
+});
+
+
 };
+
+
 
     // 지갑 확인 버튼 클릭 이벤트 리스너 (개발자 모드)
     document.getElementById("checkWalletBtn").addEventListener("click", async function() {
