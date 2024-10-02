@@ -1,5 +1,5 @@
 import { web3, contractAddress, contract } from './web3Setup.js';
-// import { PINATA_TOKEN } from './token.js';
+import { PINATA_TOKEN } from './token.js';
 
 const App = {
   metadataCID: '',
