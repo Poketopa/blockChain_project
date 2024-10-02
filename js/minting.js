@@ -6,9 +6,9 @@ const App = {
 
   //로그인 체크
   checkLogin: function () {
-    let privatekey = JSON.parse(localStorage.getItem('privateKey'));
-    let publickey = JSON.parse(localStorage.getItem('walletAddress'));
-    // console.log(privatekey, publickey);
+    let privatekey = localStorage.getItem('privateKey');
+    let publickey = localStorage.getItem('walletAddress');
+    console.log(privatekey, publickey);
     if (privatekey === null || publickey === null) {
       // 로그인 x -> alert(로그인 먼저) -> 로그인 페이지로 이동
       return false;
