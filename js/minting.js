@@ -6,8 +6,6 @@ const App = {
 
   //로그인 체크
   checkLogin: function () {
-    console.log(privatekey, publickey);
-
     if (privatekey === null || publickey === null) {
       // 로그인 x -> alert(로그인 먼저) -> 로그인 페이지로 이동
       return false;
