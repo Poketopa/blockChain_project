@@ -118,7 +118,7 @@
 
                     const response = await axios.get(finalUrl);
                     const nftData = response.data;
-                    const imageUrl = pinataBaseUrl + nftData.image.replace("ipfs://", "");
+                    const imageUrl = pinataBaseUrl + nftData.image;
 
                     // NFT 이미지 출력
                     nftGalleryDiv.innerHTML += `
