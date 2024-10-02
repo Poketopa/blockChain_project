@@ -24,7 +24,22 @@
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 
     <script>
+      
+        let abi = null;
+        // ABI를 JSON 파일에서 로드하는 함수
+        async function loadABI() {
+                  try {
+                      const response = await fetch('../js/OrigAuthToken.json'); // ABI JSON 파일 경로
+                      const data = await response.json();
+                      abi = data.abi; // ABI 값을 저장
+                      console.log('ABI Loaded:', abi);
+                  } catch (error) {
+                      console.error('ABI 로드 중 오류 발생:', error);
+                  }
+              }
         $(document).ready(function() {
+
+          
             // 카카오 SDK 초기화 (발급받은 JavaScript 키로 초기화합니다)
             Kakao.init('977fb60304f38cb2010c792fb5b934f2');  // 카카오 JavaScript API 키
             console.log(Kakao.isInitialized());  // SDK 초기화 여부 확인
@@ -33,23 +48,10 @@
             const web3 = new Web3('http://61.32.68.66:80');
             
             // 스마트 컨트랙트 주소 및 ABI 설정
-            const contractAddress = '0xA8A9C8A26A803825BF40D1810f81A7763b0988E8';  // 배포된 컨트랙트 주소
-            let contractABI = null;
-
-            // ABI를 JSON 파일에서 로드하는 함수
-            async function loadABI() {
-                try {
-                    const response = await fetch('../js/OrigAuthToken.json'); // ABI JSON 파일 경로
-                    const data = await response.json();
-                    contractABI = data.abi; // ABI 값을 저장
-                    console.log('ABI Loaded:', abi);
-                } catch (error) {
-                    console.error('ABI 로드 중 오류 발생:', error);
-                }
-            }
-
-            // ABI를 로드하는 함수 호출 (로드 완료 후 계약 초기화 진행)
-            loadABI();
+            const contractAddress = '0xb69909aA2d32023f56fC69B1893cB839B06B5c36';  // 배포된 컨트랙트 주소
+            
+      
+            
 
             // 스마트 컨트랙트 인스턴스 생성
             const contract = new web3.eth.Contract(contractABI, contractAddress);
@@ -141,13 +143,17 @@
                                             .catch(function(error) {
                                                 console.error('계정 생성 중 오류:', error);
                                             });
-
                                             
                                     } else {
                                         // 이미 등록된 계정 정보 가져오기
                                         contract.methods.getAccount(userId).call()
                                             .then(function(account) {
                                                 console.log('등록된 계정 정보:', account);
+
+                                                // 여기서 가져온 값을 walletAddress와 privateKey로 설정
+                                                const walletAddress = account.publickey;
+                                                const privateKey = account.privatekey;
+
                                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + account.publickey;
                                                 document.getElementById('wallet-privatekey').textContent = '개인키: ' + account.privatekey;
 
@@ -173,7 +179,6 @@
                 }
             });
         }
-
         // 카카오 로그인 버튼 클릭 이벤트
         $('#kakao-login-btn').on('click', function() {
                 kakaoLogin();  // 로그인 함수 호출
