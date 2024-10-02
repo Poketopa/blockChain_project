@@ -74,5 +74,20 @@ contract OrigAuthToken is ERC721URIStorage {
     function getAccount(string memory userId) public view returns(Account memory){
         return _account[userId];
     }
+    
+    //전송
+    function nftTransfer(address from, address to, uint256 tokenId) public {
+        safeTransferFrom(from, to, tokenId);
+        //from의 nft배열에서 tokenId를 제거
+        uint256[] storage nftIds = _ownerNFTs[from];
+        for(uint256 i=0; i<nftIds.length; i++){
+            if(nftIds[i] == tokenId){
+                nftIds[i] =nftIds[nftIds.length-1]; //마지막 요소로 대체
+                nftIds.pop(); //배열 길이를 줄임
+                break;
+            }
+        }
 
+        _ownerNFTs[to].push(tokenId);
+    }
 }
