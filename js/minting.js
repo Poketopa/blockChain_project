@@ -5,7 +5,7 @@ const App = {
   metadataCID: '',
 
   //로그인 체크
-  checkLogin: function () {
+  checkLogin: function (privatekey, publickey) {
     if (privatekey === null || publickey === null) {
       // 로그인 x -> alert(로그인 먼저) -> 로그인 페이지로 이동
       return false;
@@ -87,12 +87,12 @@ const App = {
 //페이지 로딩되면
 $(function () {
   //로그인 되었는지 확인
-  if (!App.checkLogin()) {
+  let privatekey = localStorage.getItem('privateKey');
+  let publickey = localStorage.getItem('walletAddress');
+  if (!App.checkLogin(privatekey, publickey)) {
     alert('로그인 먼저 해주세요');
     location.href = 'login.html';
   }
-  let privatekey = localStorage.getItem('privateKey');
-  let publickey = localStorage.getItem('walletAddress');
 
   let filename;
   let uploadFile;
