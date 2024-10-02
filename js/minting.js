@@ -1,14 +1,13 @@
 import { web3, contractAddress, contract } from './web3Setup.js';
-// import { PINATA_TOKEN } from './token.js';
+import { PINATA_TOKEN } from './token.js';
 
 const App = {
   metadataCID: '',
 
   //로그인 체크
   checkLogin: function () {
-    let privatekey = JSON.parse(localStorage.getItem('privateKey'));
-    let publickey = JSON.parse(localStorage.getItem('walletAddress'));
-    // console.log(privatekey, publickey);
+    console.log(privatekey, publickey);
+
     if (privatekey === null || publickey === null) {
       // 로그인 x -> alert(로그인 먼저) -> 로그인 페이지로 이동
       return false;
@@ -42,9 +41,13 @@ const App = {
           method: 'POST',
           headers: { Authorization: `Bearer ${PINATA_TOKEN}`, 'Content-Type': 'application/json' },
 
-          body: JSON.stringify(
-            `{"pinataMetadata":{"name":"${filename}.json"},"pinataContent":{"name":"${filename}", "image":"${fileHash}","serialnumber":"${serialnum}"}}`
-          ),
+          // body: JSON.stringify(
+          //   `{"pinataMetadata":{"name":"${filename}.json"},"pinataContent":{"name":"${filename}", "image":"${fileHash}","serialnumber":"${serialnum}"}}`
+          // ),
+          body: JSON.stringify({
+            pinataMetadata: { name: `${filename}.json` },
+            pinataContent: { name: `${filename}`, image: `${fileHash}`, serialnumber: `${serialnum}` },
+          }),
         };
 
         const response = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', options);
@@ -90,6 +93,8 @@ $(function () {
     alert('로그인 먼저 해주세요');
     location.href = 'login.html';
   }
+  let privatekey = localStorage.getItem('privateKey');
+  let publickey = localStorage.getItem('walletAddress');
 
   let filename;
   let uploadFile;
