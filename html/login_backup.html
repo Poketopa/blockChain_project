@@ -33,7 +33,7 @@
             const web3 = new Web3('http://61.32.68.66:80');
 
             // 스마트 컨트랙트 주소 및 ABI 설정
-            const contractAddress = '0xea3aa01bb17DB95430C93B3D47FFE7D0B8012CF5';  // 배포된 컨트랙트 주소
+            const contractAddress = '0xb69909aA2d32023f56fC69B1893cB839B06B5c36';  // 배포된 컨트랙트 주소
             
             const contractABI = [{
       "inputs": [],
@@ -710,14 +710,14 @@
         <p>Please enter your credentials to login.</p>
 
         <!-- 일반 로그인 폼 -->
-        <form>
-          <div class="form-group">
-              <label for="username">Username:</label>
-              <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-          </div>
-          <button type="submit" id="login-btn" class="btn btn-primary">Login</button>
-      </form>
-
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      
         <!-- 카카오톡 로그인 버튼 -->
         <div style="margin-top: 20px;">
             <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>
