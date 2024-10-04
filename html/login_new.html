@@ -179,6 +179,21 @@
         }
     </style>
     <script>
+        let abi = null;
+        const contractAddress = "0xea3aa01bb17DB95430C93B3D47FFE7D0B8012CF5"; // 스마트 컨트랙트 주소
+
+        // ABI를 JSON 파일에서 로드하는 함수
+        async function loadABI() {
+            try {
+                const response = await fetch('../js/OrigAuthToken.json'); // ABI JSON 파일 경로 수정 필요
+                const data = await response.json();
+                abi = data.abi; // ABI 값을 저장
+                console.log('ABI Loaded:', abi);
+            } catch (error) {
+                console.error('ABI 로드 중 오류 발생:', error);
+            }
+        }
+                
         // 카카오톡 API 초기화
         Kakao.init('977fb60304f38cb2010c792fb5b934f2'); // 여기에 실제 앱 키를 입력하세요.
 
