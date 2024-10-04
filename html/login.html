@@ -35,8 +35,7 @@
             // 스마트 컨트랙트 주소 및 ABI 설정
             const contractAddress = '0xea3aa01bb17DB95430C93B3D47FFE7D0B8012CF5';  // 배포된 컨트랙트 주소
             
-            const contractABI = [
-    {
+            const contractABI = [{
       "inputs": [],
       "stateMutability": "nonpayable",
       "type": "constructor"
@@ -166,20 +165,6 @@
       ],
       "name": "minting",
       "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "admin",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
     },
     {
       "inputs": [
@@ -560,26 +545,6 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "getBalance",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
           "name": "from",
           "type": "address"
         },
@@ -598,8 +563,8 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
-    }
-  ]
+    }];
+
             // 스마트 컨트랙트 인스턴스 생성
             const contract = new web3.eth.Contract(contractABI, contractAddress);
             let newAccount = null;  // 지갑 정보를 한 번만 생성하고 저장할 변수
@@ -643,6 +608,8 @@
 
             // 페이지가 로드될 때 로컬 스토리지에서 사용자 정보 불러오기
             loadUserInfo();
+
+            
 
             // username 입력으로 로그인 및 계정 생성 함수
             function handleLoginWithUsername() {
