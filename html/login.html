@@ -813,17 +813,13 @@
         <p>Please enter your credentials to login.</p>
 
         <!-- 일반 로그인 폼 -->
-        <form action="/login" method="POST">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+        <form>
+          <div class="form-group">
+              <label for="username">Username:</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+          </div>
+          <button type="submit" id="login-btn" class="btn btn-primary">Login</button>
+      </form>
 
         <!-- 카카오톡 로그인 버튼 -->
         <div style="margin-top: 20px;">
