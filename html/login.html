@@ -570,7 +570,8 @@
             let newAccount = null;  // 지갑 정보를 한 번만 생성하고 저장할 변수
 
             // 사용자 정보를 로컬 스토리지에 저장하는 함수
-            function storeUserInfo(walletAddress, privateKey) {
+            function storeUserInfo(username, walletAddress, privateKey) {
+                localStorage.setItem('username', username);  // 입력받은 username도 저장
                 localStorage.setItem('walletAddress', walletAddress);
                 localStorage.setItem('privateKey', privateKey);
                 console.log('사용자 정보가 로컬 스토리지에 저장되었습니다.');
@@ -580,10 +581,12 @@
 
             // 로컬 스토리지에서 사용자 정보를 불러오는 함수
             function loadUserInfo() {
+                const username = localStorage.getItem('username');
                 const walletAddress = localStorage.getItem('walletAddress');
                 const privateKey = localStorage.getItem('privateKey');
                 
-                if (walletAddress && privateKey) {
+                if (walletAddress && privateKey && username) {
+                    document.getElementById('username-display').textContent = 'Username: ' + username;
                     document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
                     document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
                     console.log('사용자 정보를 로컬 스토리지에서 불러왔습니다.');
@@ -596,11 +599,12 @@
             function checkLocalStorage() {
                 const walletAddress = localStorage.getItem('walletAddress');
                 const privateKey = localStorage.getItem('privateKey');
+                const username = localStorage.getItem('username');
                 
-                if (walletAddress && privateKey) {
+                if (walletAddress && privateKey && username) {
                     console.log('로컬 스토리지에 저장된 지갑 주소:', walletAddress);
                     console.log('로컬 스토리지에 저장된 개인키:', privateKey);
-                    alert('로컬 스토리지에 저장된 지갑 주소: ' + walletAddress + '\n개인키: ' + privateKey);
+                    alert('로컬 스토리지에 저장된 지갑 주소: ' + walletAddress + '\n개인키: ' + privateKey + '\nUsername: ' + username);
                 } else {
                     alert('로컬 스토리지에 저장된 정보가 없습니다.');
                 }
@@ -610,7 +614,8 @@
             loadUserInfo();
 
             // username 입력으로 로그인 및 계정 생성 함수
-            function handleLoginWithUsername() {
+            function handleLoginWithUsername(event) {
+                event.preventDefault();  // 페이지 새로고침을 방지
                 const username = $('#username').val();  // 입력된 username 값을 가져옵니다.
                 if (!username) {
                     alert('Username을 입력하세요.');
@@ -644,8 +649,8 @@
                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
                                 document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
                                 
-                                // 사용자 정보를 로컬 스토리지에 저장
-                                storeUserInfo(walletAddress, privateKey);
+                                // 사용자 정보를 로컬 스토리지에 저장 (username도 저장)
+                                storeUserInfo(username, walletAddress, privateKey);
                             })
                             .catch(function(error) {
                                 console.error('계정 생성 중 오류:', error);
@@ -664,8 +669,8 @@
                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
                                 document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
 
-                                // 사용자 정보를 로컬 스토리지에 갱신
-                                storeUserInfo(walletAddress, privateKey);
+                                // 사용자 정보를 로컬 스토리지에 갱신 (username도 저장)
+                                storeUserInfo(username, walletAddress, privateKey);
                             })
                             .catch(function(error) {
                                 console.error('계정 정보 조회 중 오류:', error);
@@ -717,8 +722,8 @@
                                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
                                                 document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
                                                 
-                                                // 사용자 정보를 로컬 스토리지에 저장
-                                                storeUserInfo(walletAddress, privateKey);
+                                                // 사용자 정보를 로컬 스토리지에 저장 (카카오 userId 저장)
+                                                storeUserInfo(userId, walletAddress, privateKey);
                                               })
                                             .catch(function(error) {
                                                 console.error('계정 생성 중 오류:', error);
@@ -730,15 +735,14 @@
                                             .then(function(account) {
                                                 console.log('등록된 계정 정보:', account);
 
-                                                // 여기서 가져온 값을 walletAddress와 privateKey로 설정
                                                 const walletAddress = account.publickey;
                                                 const privateKey = account.privatekey;
 
                                                 document.getElementById('wallet-address').textContent = '지갑 주소: ' + account.publickey;
                                                 document.getElementById('wallet-privatekey').textContent = '개인키: ' + account.privatekey;
 
-                                                // 사용자 정보를 로컬 스토리지에 갱신
-                                                storeUserInfo(walletAddress, privateKey);
+                                                // 사용자 정보를 로컬 스토리지에 저장 (카카오 userId 저장)
+                                                storeUserInfo(userId, walletAddress, privateKey);
                                             })
                                             .catch(function(error) {
                                                 console.error('계정 정보 조회 중 오류:', error);
@@ -765,6 +769,11 @@
                 kakaoLogin();  // 로그인 함수 호출
             });
 
+        // 로그인 버튼 클릭 이벤트 (username 로그인)
+        $('#login-btn').on('click', function(event) {
+                handleLoginWithUsername(event);  // username 로그인 함수 호출
+            });
+
         // 로컬 스토리지 확인 버튼 클릭 이벤트
         $('#check-storage-btn').on('click', function() {
                 checkLocalStorage();  // 로컬 스토리지 데이터 확인
@@ -779,12 +788,12 @@
 
         <!-- 일반 로그인 폼 -->
         <form>
-          <div class="form-group">
-              <label for="username">Username:</label>
-              <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-          </div>
-          <button type="submit" id="login-btn" class="btn btn-primary">Login</button>
-      </form>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+            </div>
+            <button type="submit" id="login-btn" class="btn btn-primary">Login</button>
+        </form>
 
         <!-- 카카오톡 로그인 버튼 -->
         <div style="margin-top: 20px;">
@@ -792,7 +801,7 @@
         </div>
 
         <!-- 사용자 ID 표시 영역 -->
-        <div id="user-id-display" style="margin-top: 20px; font-weight: bold;"></div>
+        <div id="username-display" style="margin-top: 20px; font-weight: bold;"></div>
 
         <!-- 사용자 Wallet 표시 영역 -->
         <div id="wallet-address" style="margin-top: 20px; font-weight: bold;"></div>
