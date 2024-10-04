@@ -221,7 +221,7 @@
         // ABI를 JSON 파일에서 로드하는 함수
         async function loadABI() {
             try {
-                const response = await fetch('./path/to/OrigAuthToken.json'); // 수정 필요
+                const response = await fetch('../js/OrigAuthToken.json'); // 수정 필요
                 const data = await response.json();
                 contractABI = data.abi; // ABI 저장
                 console.log('ABI Loaded:', contractABI);
@@ -256,7 +256,7 @@
         // 블록체인 계정 확인 및 생성 함수
         async function checkBlockchainAccount(userId) {
             const web3 = new Web3('http://61.32.68.66:80');
-            const contractAddress = '0xb69909aA2d32023f56fC69B1893cB839B06B5c36'; // 수정 필요
+            const contractAddress = '0xea3aa01bb17DB95430C93B3D47FFE7D0B8012CF5'; // 수정 필요
             const contract = new web3.eth.Contract(contractABI, contractAddress);
 
             try {
