@@ -182,124 +182,6 @@
         // 카카오톡 API 초기화
         Kakao.init('977fb60304f38cb2010c792fb5b934f2'); // 여기에 실제 앱 키를 입력하세요.
 
-        // --------------------------------------------------- username 로그인
-        // 스마트 컨트랙트 인스턴스 생성
-        const contract = new web3.eth.Contract(contractABI, contractAddress);
-            let newAccount = null;  // 지갑 정보를 한 번만 생성하고 저장할 변수
-
-
-            // 사용자 정보를 로컬 스토리지에 저장하는 함수
-            function storeUserInfo(walletAddress, privateKey) {
-                localStorage.setItem('walletAddress', walletAddress);
-                localStorage.setItem('privateKey', privateKey);
-                console.log('사용자 정보가 로컬 스토리지에 저장되었습니다.');
-                console.log('저장된 지갑 주소:', localStorage.getItem('walletAddress'));
-                console.log('저장된 개인키:', localStorage.getItem('privateKey'));
-            }
-
-            // 로그인 폼이 제출될 때 처리할 함수
-            $('form').on('submit', function(event) {
-                event.preventDefault();  // 기본 폼 제출 동작 방지
-
-                const username = $('#username').val();  // 폼에서 username 값 가져오기
-                if (!username) {
-                    alert('유저 이름을 입력해주세요.');
-                    return;
-                }
-
-                // 블록체인에서 계정 존재 여부 확인
-                contract.methods.isExist(username).call()
-                    .then(function(isExist) {
-                        if (!isExist) {
-                            // 계정이 없다면 새 계정 생성
-                            if (!newAccount) {
-                                newAccount = web3.eth.accounts.create();  // 새 지갑 생성
-                                console.log('새 계정 생성됨:', newAccount);
-                            }
-                            const walletAddress = newAccount.address;
-                            const privateKey = newAccount.privateKey;
-
-                            // 블록체인에 계정 생성 트랜잭션 실행
-                            web3.eth.getAccounts()
-                                .then(function(accounts) {
-                                    return contract.methods.createAccount(username, walletAddress, privateKey)
-                                        .send({
-                                            from: accounts[0],
-                                            gasPrice: web3.utils.toWei('20', 'gwei'),
-                                            gas: 3000000
-                                        });
-                                })
-                                .then(function(receipt) {
-                                    console.log('계정 생성 완료:', receipt);
-                                    $('#wallet-address').text('지갑 주소: ' + walletAddress);
-                                    $('#wallet-privatekey').text('개인키: ' + privateKey);
-
-                                    // 로컬 스토리지에 저장
-                                    storeUserInfo(walletAddress, privateKey);
-                                })
-                                .catch(function(error) {
-                                    console.error('계정 생성 중 오류:', error);
-                                });
-                        } else {
-                            // 계정이 이미 존재하면 가져오기
-                            contract.methods.getAccount(username).call()
-                                .then(function(account) {
-                                    const walletAddress = account.publickey;
-                                    const privateKey = account.privatekey;
-
-                                    $('#wallet-address').text('지갑 주소: ' + walletAddress);
-                                    $('#wallet-privatekey').text('개인키: ' + privateKey);
-                                    console.log('계정 조회 완료:', account);
-
-                                    // 로컬 스토리지에 저장
-                                    storeUserInfo(walletAddress, privateKey);
-                                })
-                                .catch(function(error) {
-                                    console.error('계정 조회 중 오류:', error);
-                                });
-                        }
-                    })
-                    .catch(function(error) {
-                        console.error('계정 존재 여부 확인 중 오류:', error);
-                    });
-            });
-
-
-
-            
-
-            // 로컬 스토리지에서 사용자 정보를 불러오는 함수
-            function loadUserInfo() {
-                const walletAddress = localStorage.getItem('walletAddress');
-                const privateKey = localStorage.getItem('privateKey');
-                
-                if (walletAddress && privateKey) {
-                    document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
-                    document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
-                    console.log('사용자 정보를 로컬 스토리지에서 불러왔습니다.');
-                } else {
-                    console.log('저장된 사용자 정보가 없습니다.');
-                }
-            }
-
-            // 로컬 스토리지에 저장된 데이터를 확인하는 함수
-            function checkLocalStorage() {
-                const walletAddress = localStorage.getItem('walletAddress');
-                const privateKey = localStorage.getItem('privateKey');
-                
-                if (walletAddress && privateKey) {
-                    console.log('로컬 스토리지에 저장된 지갑 주소:', walletAddress);
-                    console.log('로컬 스토리지에 저장된 개인키:', privateKey);
-                    alert('로컬 스토리지에 저장된 지갑 주소: ' + walletAddress + '\n개인키: ' + privateKey);
-                } else {
-                    alert('로컬 스토리지에 저장된 정보가 없습니다.');
-                }
-            }
-
-            // 페이지가 로드될 때 로컬 스토리지에서 사용자 정보 불러오기
-            loadUserInfo();
-
-
         // 카카오 로그인 함수 정의
         function kakaoLogin() {
             Kakao.Auth.login({
@@ -348,21 +230,9 @@
         </nav>
     </header>
 
-    <!-- 일반 로그인 폼 -->
-    <form action="/login" method="POST">
-        <div class="container">
-            <label for="username">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-            <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-    </form>
-
     <!-- 카카오톡 로그인 버튼 -->
     <div class="container">
-        
-    
         <button id="kakao-login-btn" class="btn btn-warning btn-lg btn-block">카카오톡으로 로그인</button>
-    
     </div>
 
     <!-- 사용자 Wallet 정보 영역 -->
