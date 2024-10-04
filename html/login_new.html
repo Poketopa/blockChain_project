@@ -284,14 +284,14 @@
         }
 
         // 로컬 스토리지 확인 버튼 클릭 이벤트 리스너
-        document.getElementById('check-storage-btn').addEventListener('click', function() {
+        document.getElementById('#check-storage-btn').addEventListener('click', function() {
             const walletAddress = localStorage.getItem('walletAddress');
             const privateKey = localStorage.getItem('privateKey');
             alert(`Wallet Address: ${walletAddress}\nPrivate Key: ${privateKey}`);
         });
 
         // 카카오 로그인 버튼 클릭 이벤트 리스너
-        document.getElementById('kakao-login-btn').addEventListener('click', kakaoLogin);
+        document.getElementById('#kakao-login-btn').addEventListener('click', kakaoLogin);
 
         // 페이지 로드 시 ABI 로드
         window.onload = async function() {
