@@ -116,9 +116,16 @@
                     const selectedTokenURI = tokenURIs[i];
                     const finalUrl = pinataBaseUrl + selectedTokenURI;
 
+                    console.log("Fetching metadata from: ", finalUrl);  // 메타데이터 URL 출력
+
                     const response = await axios.get(finalUrl);
                     const nftData = response.data;
+
+                    console.log("Fetched NFT data: ", nftData);  // NFT 메타데이터 출력
+
                     const imageUrl = pinataBaseUrl + nftData.image;
+
+                    console.log("NFT image URL: ", imageUrl);  // 이미지 URL 출력
 
                     // NFT 이미지 출력
                     nftGalleryDiv.innerHTML += `
