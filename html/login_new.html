@@ -3,16 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AuthBuyMe</title>
 
     <!-- 글꼴 최적화 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome (아이콘 추가) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-    <!-- 카카오 SDK -->
-    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -29,6 +25,11 @@
     <!-- Bootstrap JS and Popper.js (for Bootstrap functionality) -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>    
 
+    <meta charset="UTF-8">
+    <title>카카오톡 로그인</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
     <style>        
         /* 전체 레이아웃 설정 */
         body {
@@ -103,7 +104,7 @@
             text-align: center;
             position: relative;
             width: 100%;
-            border-top: 1px solid white;
+            border-top: 1px solid white; /* 상단에 흰색 얇은 줄 추가 */
         }
 
         .btn-link {
@@ -177,12 +178,47 @@
             }
         }
     </style>
+    <script>
+        // 카카오톡 API 초기화
+        Kakao.init('977fb60304f38cb2010c792fb5b934f2'); // 여기에 실제 앱 키를 입력하세요.
 
+        // 카카오 로그인 함수 정의
+        function kakaoLogin() {
+            Kakao.Auth.login({
+                success: function(authObj) {
+                    console.log('액세스 토큰:', authObj.access_token);  // 액세스 토큰 출력
+
+                    // 이후 액세스 토큰을 사용하여 사용자 정보를 가져옵니다.
+                    Kakao.API.request({
+                        url: '/v2/user/me',
+                        success: function(res) {
+                            console.log('사용자 정보:', res);
+                            alert('로그인 성공');
+                            // 추가적인 로그인 성공 처리 로직
+                        },
+                        fail: function(error) {
+                            console.error('사용자 정보 요청 실패:', error);
+                            alert('사용자 정보 요청 실패');
+                        }
+                    });
+                },
+                fail: function(err) {
+                    console.error('로그인 실패:', err);
+                    alert('로그인 실패');
+                }
+            });
+        }
+
+        // 페이지 로드 시 ABI 로드
+        window.onload = async function() {
+            await loadABI();
+        };
+    </script>
 </head>
 <body>
     <header class="header">
         <div class="title-container">
-            <h1>AuthBuyMe</h1> <!-- 타이틀 -->
+            <h1>사용자 구매 인증 NFT 서비스</h1> <!-- 타이틀 -->
         </div>
         <nav>
             <ul>
@@ -218,85 +254,15 @@
     <script>
         let contractABI = null;
 
-        // ABI를 JSON 파일에서 로드하는 함수
-        async function loadABI() {
-            try {
-                const response = await fetch('../js/OrigAuthToken.json'); // 수정 필요
-                const data = await response.json();
-                contractABI = data.abi; // ABI 저장
-                console.log('ABI Loaded:', contractABI);
-            } catch (error) {
-                console.error('ABI 로드 중 오류 발생:', error);
-            }
-        }
-
-        // 카카오 로그인 함수
-        function kakaoLogin() {
-            Kakao.Auth.login({
-                success: function(authObj) {
-                    console.log('카카오 로그인 성공:', authObj);
-                    Kakao.API.request({
-                        url: '/v2/user/me',
-                        success: function(res) {
-                            const userId = res.id.toString();
-                            document.getElementById('user-id-display').textContent = '카카오 사용자 ID: ' + userId;
-                            checkBlockchainAccount(userId);
-                        },
-                        fail: function(error) {
-                            console.error('카카오 사용자 정보 요청 실패:', error);
-                        }
-                    });
-                },
-                fail: function(err) {
-                    console.error('카카오 로그인 실패:', err);
-                }
-            });
-        }
-
-        // 블록체인 계정 확인 및 생성 함수
-        async function checkBlockchainAccount(userId) {
-            const web3 = new Web3('http://61.32.68.66:80');
-            const contractAddress = '0xea3aa01bb17DB95430C93B3D47FFE7D0B8012CF5'; // 수정 필요
-            const contract = new web3.eth.Contract(contractABI, contractAddress);
-
-            try {
-                const isExist = await contract.methods.isExist(userId).call();
-                if (!isExist) {
-                    const newAccount = web3.eth.accounts.create();
-                    document.getElementById('wallet-address').textContent = '지갑 주소: ' + newAccount.address;
-                    document.getElementById('wallet-privatekey').textContent = '개인키: ' + newAccount.privateKey;
-                    storeUserInfo(newAccount.address, newAccount.privateKey);
-                } else {
-                    const account = await contract.methods.getAccount(userId).call();
-                    document.getElementById('wallet-address').textContent = '지갑 주소: ' + account.publickey;
-                    document.getElementById('wallet-privatekey').textContent = '개인키: ' + account.privatekey;
-                    storeUserInfo(account.publickey, account.privatekey);
-                }
-            } catch (error) {
-                console.error('블록체인 계정 확인 오류:', error);
-            }
-        }
-
-        // 사용자 정보를 로컬 스토리지에 저장하는 함수
-        function storeUserInfo(walletAddress, privateKey) {
-            localStorage.setItem('walletAddress', walletAddress);
-            localStorage.setItem('privateKey', privateKey);
-        }
-
         // 로컬 스토리지 확인 버튼 클릭 이벤트 리스너
-        document.getElementById('#check-storage-btn').addEventListener('click', function() {
+        document.getElementById('check-storage-btn').addEventListener('click', function() {
             const walletAddress = localStorage.getItem('walletAddress');
-            const privateKey = localStorage.getItem('privateKey');
-            alert(`Wallet Address: ${walletAddress}\nPrivate Key: ${privateKey}`);
+            alert(`Wallet Address: ${walletAddress}`);
+            // 개인 키는 보안상 노출되지 않도록 주의
         });
 
         // 카카오 로그인 버튼 클릭 이벤트 리스너
-        document.getElementById('#kakao-login-btn').addEventListener('click', kakaoLogin);
-
-        // 페이지 로드 시 ABI 로드
-        window.onload = async function() {
-            await loadABI();
-        };
+        document.getElementById('kakao-login-btn').addEventListener('click', kakaoLogin);
     </script>
 </body>
 </html>
