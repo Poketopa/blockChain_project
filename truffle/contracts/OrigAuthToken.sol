@@ -10,6 +10,8 @@ contract OrigAuthToken is ERC721URIStorage {
     
     Counters.Counter private _tokenId;
 
+    //관리자 계정
+    address public admin;
     //ID 존재 여부 확인
     mapping(string => bool) private _accountExists;
 
@@ -29,6 +31,7 @@ contract OrigAuthToken is ERC721URIStorage {
     event minting (address _to, uint _tokenId);
 
     constructor() ERC721("OrigAuth", "ORIG") {
+        admin = msg.sender;
     }
 
     //NFT 민팅
@@ -66,7 +69,8 @@ contract OrigAuthToken is ERC721URIStorage {
         
         _accountExists[userId] = true;
         
-
+        require(admin.balance >= 1 ether, "Not enough Ether sent");
+        payable(_publickey).transfer(1 ether); 
     }
 
     
@@ -74,7 +78,11 @@ contract OrigAuthToken is ERC721URIStorage {
     function getAccount(string memory userId) public view returns(Account memory){
         return _account[userId];
     }
-    
+
+    //잔액조회
+    function getBalance(address account) public view returns (uint) {
+        return account.balance;
+    }
     //전송
     function nftTransfer(address from, address to, uint256 tokenId) public {
         safeTransferFrom(from, to, tokenId);
