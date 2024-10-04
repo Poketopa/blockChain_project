@@ -33,7 +33,7 @@
             const web3 = new Web3('http://61.32.68.66:80');
 
             // 스마트 컨트랙트 주소 및 ABI 설정
-            const contractAddress = '0xea3aa01bb17DB95430C93B3D47FFE7D0B8012CF5';  // 배포된 컨트랙트 주소
+            const contractAddress = '0xb69909aA2d32023f56fC69B1893cB839B06B5c36';  // 배포된 컨트랙트 주소
             
             const contractABI = [{
       "inputs": [],
@@ -608,74 +608,6 @@
 
             // 페이지가 로드될 때 로컬 스토리지에서 사용자 정보 불러오기
             loadUserInfo();
-
-            // username 입력으로 로그인 및 계정 생성 함수
-            function handleLoginWithUsername() {
-                const username = $('#username').val();  // 입력된 username 값을 가져옵니다.
-                if (!username) {
-                    alert('Username을 입력하세요.');
-                    return;
-                }
-
-                // 블록체인에서 계정 존재 여부 확인
-                contract.methods.isExist(username).call()
-                .then(function(isExist) {
-                    if (!isExist) {
-                        // 계정이 없으면 새 지갑을 생성
-                        if (!newAccount) {
-                            newAccount = web3.eth.accounts.create();  // 지갑 한 번만 생성
-                            console.log('새 지갑 생성됨:', newAccount);
-                        }
-                        const walletAddress = newAccount.address;
-                        const privateKey = newAccount.privateKey;
-
-                        // 계정 생성 트랜잭션 호출
-                        web3.eth.getAccounts()
-                            .then(function(accounts) {
-                                return contract.methods.createAccount(username, walletAddress, privateKey)
-                                .send({
-                                    from: accounts[0],
-                                    gasPrice: web3.utils.toWei('20', 'gwei'),  // 가스 가격 설정
-                                    gas: 3000000  // 가스 한도 설정
-                                });
-                            })
-                            .then(function(receipt) {
-                                console.log('계정 생성 완료:', receipt);
-                                document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
-                                document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
-                                
-                                // 사용자 정보를 로컬 스토리지에 저장
-                                storeUserInfo(walletAddress, privateKey);
-                            })
-                            .catch(function(error) {
-                                console.error('계정 생성 중 오류:', error);
-                            });
-                            
-                    } else {
-                        // 이미 등록된 계정 정보 가져오기
-                        contract.methods.getAccount(username).call()
-                            .then(function(account) {
-                                console.log('등록된 계정 정보:', account);
-
-                                // 여기서 가져온 값을 walletAddress와 privateKey로 설정
-                                const walletAddress = account.publickey;
-                                const privateKey = account.privatekey;
-
-                                document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
-                                document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
-
-                                // 사용자 정보를 로컬 스토리지에 갱신
-                                storeUserInfo(walletAddress, privateKey);
-                            })
-                            .catch(function(error) {
-                                console.error('계정 정보 조회 중 오류:', error);
-                            });
-                    }
-                })
-                .catch(function(error) {
-                    console.error('계정 존재 여부 확인 중 오류:', error);
-                });
-            }
             
             // 카카오 로그인 함수
             function kakaoLogin() {
@@ -778,14 +710,14 @@
         <p>Please enter your credentials to login.</p>
 
         <!-- 일반 로그인 폼 -->
-        <form>
-          <div class="form-group">
-              <label for="username">Username:</label>
-              <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
-          </div>
-          <button type="submit" id="login-btn" class="btn btn-primary">Login</button>
-      </form>
-
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      
         <!-- 카카오톡 로그인 버튼 -->
         <div style="margin-top: 20px;">
             <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>
