@@ -67,6 +67,7 @@ const App = {
       {
         from: _publickey,
         to: contractAddress,
+        value: web3.utils.toWei('1', 'ether'),
         gas: 2000000,
         gasPrice: web3.utils.toWei('20', 'gwei'),
         data: contract.methods.mintNFT(_publickey, this.metadataCID).encodeABI(),
