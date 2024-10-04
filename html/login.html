@@ -609,15 +609,17 @@
             // 페이지가 로드될 때 로컬 스토리지에서 사용자 정보 불러오기
             loadUserInfo();
 
-            
+
 
             // username 입력으로 로그인 및 계정 생성 함수
-            function handleLoginWithUsername() {
+            function usernameLogin() {
                 const username = $('#username').val();  // 입력된 username 값을 가져옵니다.
                 if (!username) {
                     alert('Username을 입력하세요.');
                     return;
                 }
+
+                colsole.log("입력된 username = ",username);
 
                 // 블록체인에서 계정 존재 여부 확인
                 contract.methods.isExist(username).call()
@@ -761,6 +763,11 @@
                 }
             });
         }
+
+        // 일반 로그인 버튼 클릭 이벤트
+        $('#login-btn').on('click', function(event) {
+                usernameLogin();  // 일반 로그인 함수 호출
+            });
 
         // 카카오 로그인 버튼 클릭 이벤트
         $('#kakao-login-btn').on('click', function() {
