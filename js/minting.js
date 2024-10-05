@@ -69,7 +69,7 @@ const App = {
           from: '0x5469E28950211404600ca84fFb5Ad34D1aE72BbE',
           to: _publickey,
           value: web3.utils.toWei('1', 'ether'),
-          gas: 21000, // 간단한 이더 전송의 기본 가스
+          gas: 30000, // 간단한 이더 전송의 기본 가스
           gasPrice: web3.utils.toWei('20', 'gwei'), // 가스 가격 설정
           data: contract.methods.sendEther(_publickey).encodeABI(),
         },
