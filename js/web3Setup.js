@@ -4,6 +4,6 @@ const RPC_URL = 'http://61.32.68.66:80';
 
 export const web3 = new Web3(RPC_URL);
 
-export const contractAddress = '0xea3aa01bb17DB95430C93B3D47FFE7D0B8012CF5';
+export const contractAddress = '0x89Ae677A08f63c271499e0d2588C0A5C45B3D29f';
 
 export const contract = new web3.eth.Contract(contractABI, contractAddress);

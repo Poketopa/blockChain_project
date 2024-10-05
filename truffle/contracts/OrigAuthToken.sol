@@ -34,6 +34,15 @@ contract OrigAuthToken is ERC721URIStorage {
         admin = msg.sender;
     }
 
+    //ether 보내기
+    function sendEther(address payable _to) public payable {
+        require(msg.value > 0, "Send some ether");
+        require(_to != address(0), "Invalid address");
+
+        // 이더 전송
+        (bool sent, ) = _to.call{value: msg.value}("");
+        require(sent, "Failed to send Ether");
+    }
     //NFT 민팅
     function mintNFT(address to, string memory _tokenURI) public{
         _tokenId.increment();
@@ -69,8 +78,6 @@ contract OrigAuthToken is ERC721URIStorage {
         
         _accountExists[userId] = true;
         
-        require(admin.balance >= 1 ether, "Not enough Ether sent");
-        payable(_publickey).transfer(1 ether); 
     }
 
     

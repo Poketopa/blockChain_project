@@ -410,6 +410,20 @@ export const abi = [
   {
     inputs: [
       {
+        internalType: 'address payable',
+        name: '_to',
+        type: 'address',
+      },
+    ],
+    name: 'sendEther',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+    payable: true,
+  },
+  {
+    inputs: [
+      {
         internalType: 'address',
         name: 'to',
         type: 'address',
