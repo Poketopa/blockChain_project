@@ -37,7 +37,7 @@
             background-color: #343a40;
             color: white;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -267,8 +267,8 @@
 
                     // NFT 이미지 출력
                     nftGalleryDiv.innerHTML += `
-                        <div class="col-4 col-md-4">
-                            <img src="${imageUrl}" alt="${nftData.name}" class="img-fluid mt-3" style="max-width: 100%; height: auto; border: 2px solid black; border-radius: 5px;">
+                        <div class="col-md-4">
+                            <img src="${imageUrl}" alt="${nftData.name}" class="img-fluid mt-3" style="max-width: 100%; height: auto;">
                         </div>
                     `;
                 }
