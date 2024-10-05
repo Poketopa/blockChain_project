@@ -42,13 +42,13 @@ $(function () {
   //로그인 되었는지 확인
   let privatekey = localStorage.getItem('privateKey');
   let publickey = localStorage.getItem('walletAddress');
-  // if (!App.checkLogin(privatekey, publickey)) {
-  //   // 로그인 메시지 보여주기
-  //   $('#userMessage').css('display', 'block'); // 메시지를 표시
-  //   return; // 이후 동작은 멈춤
-  // } else {
-  //   $('#userMessage').css('display', 'none'); // 로그인 성공 시 메시지 숨기기
-  // }
+  if (!App.checkLogin(privatekey, publickey)) {
+    // 로그인 메시지 보여주기
+    $('#userMessage').css('display', 'block'); // 메시지를 표시
+    return; // 이후 동작은 멈춤
+  } else {
+    $('#userMessage').css('display', 'none'); // 로그인 성공 시 메시지 숨기기
+  }
   document.getElementById('senderAddress').value = publickey;
   $('#transferBtn').on('click', function () {
     // 폼에서 값 가져오기
