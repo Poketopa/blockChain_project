@@ -20,7 +20,7 @@ const App = {
       const signedTx = await web3.eth.accounts.signTransaction(
         {
           from: fromPublickey,
-          to: toPublickey,
+          to: contractAddress,
           gas: 2000000,
           gasPrice: web3.utils.toWei('20', 'gwei'),
           data: contract.methods.nftTransfer(fromPublickey, toPublickey, tokenId).encodeABI(),
