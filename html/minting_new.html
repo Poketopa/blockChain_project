@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minting</title>
-    <style>        
+    <style>
         /* 전체 레이아웃 설정 */
         body {
             font-family: 'Noto Sans KR', sans-serif;
@@ -79,7 +79,8 @@
             text-align: center;
             position: relative;
             width: 100%;
-            border-top: 1px solid white; /* 상단에 흰색 얇은 줄 추가 */
+            border-top: 1px solid white;
+            /* 상단에 흰색 얇은 줄 추가 */
         }
 
         .btn-link {
@@ -87,8 +88,8 @@
             text-decoration: underline;
         }
 
-        .alert {
-            margin-top: 15px;
+        .alertbox{
+            background-color: #fff3cd;
         }
 
         .row {
@@ -157,7 +158,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-       
+
     <!-- 글꼴 최적화 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 
@@ -180,7 +181,7 @@
         </nav>
     </header>
 
-    <div class="container">        
+    <div class="container">
         <div class="container">
 
             <div class="box-body">
@@ -202,15 +203,22 @@
                 <div class="col-12 py-3 my-3">
                     <p id="result"></p>
                 </div>
-
-                <div>
-                    <button class="btn btn-danger" id="mintButton">NFT 발행</button>
+                <div class="col-12 py-3 my-3 alertbox">
+                    <div id="userMessage" role="alert" style="display: none;">
+                    </div>
+                    로그인 해주세요
+                    <br>
+                    <a href="./login_new.html" class="btn btn-link">로그인 페이지로 이동</a>
                 </div>
-
             </div>
-        </div>
+            <div>
+                <button class="btn btn-danger" id="mintButton">NFT 발행</button>
+            </div>
 
-        <a href="../index.html">Back to Home</a>
+        </div>
+    </div>
+
+    <a href="../index.html">Back to Home</a>
     </div>
 
     <footer class="footer">
