@@ -264,6 +264,7 @@
                     const nftData = response.data;
 
                     const imageUrl = pinataBaseUrl + nftData.image;
+                    const tokenId = tokenIds[i]; // NFT 번호
 
                     // NFT 이미지 출력
                     nftGalleryDiv.innerHTML += `
