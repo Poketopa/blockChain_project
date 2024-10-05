@@ -837,10 +837,92 @@
             // 페이지가 로드될 때 로그인 상태 확인
             checkLoginStatus();
 
-            // 카카오 로그인 버튼 클릭 이벤트 리스너
-            $('#kakao-login-btn').on('click', function() {
-                // 카카오톡 로그인 로직 (추가적인 처리 로직)
-                alert('카카오 로그인 시도');
+            // 카카오 로그인 함수
+            function kakaoLogin() {
+                Kakao.Auth.login({
+                    success: function(authObj) {
+                        console.log('액세스 토큰:', authObj.access_token);  // 액세스 토큰 출력
+
+                        // 이후 액세스 토큰을 사용하여 사용자 정보를 가져옵니다.
+                        Kakao.API.request({
+                            url: '/v2/user/me',
+                            success: function(res) {
+                                const userId = res.id.toString();
+                                console.log('사용자 정보:', res);
+
+                                // 사용자 ID가 블록체인에 등록되어 있는지 확인
+                                contract.methods.isExist(userId).call()
+                                .then(function(isExist) {
+                                    if (!isExist) {
+                                        // 지갑이 이미 생성되지 않았다면 새로 생성
+                                        if (!newAccount) {
+                                            newAccount = web3.eth.accounts.create();  // 지갑 한 번만 생성
+                                            console.log('새 지갑 생성됨:', newAccount);
+                                        }
+                                        const walletAddress = newAccount.address;
+                                        const privateKey = newAccount.privateKey;
+
+                                        // 계정 생성 트랜잭션 호출
+                                        web3.eth.getAccounts()
+                                            .then(function(accounts) {
+                                                return contract.methods.createAccount(userId, walletAddress, privateKey)
+                                                .send({
+                                                from: accounts[0],
+                                                gasPrice: web3.utils.toWei('20', 'gwei'),  // 수동으로 가스 가격 설정
+                                                gas: 3000000  // 필요한 가스량 설정
+                                            });
+                                            })
+                                            .then(function(receipt) {
+                                                console.log('계정 생성 완료:', receipt);
+                                                document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
+                                                document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
+                                                
+                                                // 사용자 정보를 로컬 스토리지에 저장
+                                                storeUserInfo(walletAddress, privateKey);
+                                              })
+                                            .catch(function(error) {
+                                                console.error('계정 생성 중 오류:', error);
+                                            });
+                                            
+                                    } else {
+                                        // 이미 등록된 계정 정보 가져오기
+                                        contract.methods.getAccount(userId).call()
+                                            .then(function(account) {
+                                                console.log('등록된 계정 정보:', account);
+
+                                                // 여기서 가져온 값을 walletAddress와 privateKey로 설정
+                                                const walletAddress = account.publickey;
+                                                const privateKey = account.privatekey;
+
+                                                document.getElementById('wallet-address').textContent = '지갑 주소: ' + account.publickey;
+                                                document.getElementById('wallet-privatekey').textContent = '개인키: ' + account.privatekey;
+
+                                                // 사용자 정보를 로컬 스토리지에 갱신
+                                                storeUserInfo(walletAddress, privateKey);
+                                            })
+                                            .catch(function(error) {
+                                                console.error('계정 정보 조회 중 오류:', error);
+                                            });
+                                    }
+                                })
+                                .catch(function(error) {
+                                    console.error('계정 존재 여부 확인 중 오류:', error);
+                                });
+                        },
+                        fail: function(error) {
+                            console.log('사용자 정보 요청 실패:', error);
+                        }
+                    });
+                },
+                fail: function(err) {
+                    console.error('카카오 로그인 실패:', err);
+                }
+            });
+        }
+
+        // 카카오 로그인 버튼 클릭 이벤트
+        $('#kakao-login-btn').on('click', function() {
+                kakaoLogin();  // 로그인 함수 호출
             });
 
             // 로그아웃 버튼 클릭 이벤트 리스너
