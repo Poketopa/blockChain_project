@@ -736,6 +736,8 @@
                 updateUIAfterLogin();
             }
 
+            loadUserInfo();
+
             // 로그인 폼이 제출될 때 처리할 함수
             $('form').on('submit', function(event) {
                 event.preventDefault();  // 기본 폼 제출 동작 방지
@@ -842,8 +844,6 @@
                     document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
                     document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
                     console.log('사용자 정보를 로컬 스토리지에서 불러왔습니다.');
-                } else {
-                    console.log('저장된 사용자 정보가 없습니다.');
                 }
             }
 
