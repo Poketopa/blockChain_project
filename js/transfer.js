@@ -27,7 +27,7 @@ const App = {
         },
         fromPrivatekey
       );
-
+      console.log('signedTx > ', signedTx);
       const transferReceipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
       console.log('전송 완료, receipt: ', transferReceipt);
       alert('전송 완료');
@@ -49,10 +49,10 @@ $(function () {
   // } else {
   //   $('#userMessage').css('display', 'none'); // 로그인 성공 시 메시지 숨기기
   // }
-
+  document.getElementById('senderAddress').value = publickey;
   $('#transferBtn').on('click', function () {
     // 폼에서 값 가져오기
-    const senderAddress = document.getElementById('senderAddress').value;
+
     const recipientAddress = document.getElementById('recipient').value;
     const nftId = document.getElementById('nftId').value;
 
@@ -60,6 +60,6 @@ $(function () {
     console.log('송신자 주소:', senderAddress);
     console.log('수신자 주소:', recipientAddress);
     console.log('NFT ID:', nftId);
-    App.clickTransfer(senderAddress, privatekey, recipientAddress, nftId);
+    App.clickTransfer(publickey, privatekey, recipientAddress, nftId);
   });
 });
