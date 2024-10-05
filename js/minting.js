@@ -93,6 +93,7 @@ const App = {
       const mintReceipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
       console.log('민팅 완료, receipt: ', mintReceipt);
       alert('민팅 완료');
+      location.reload();
     } catch (error) {
       console.error('트랜잭션 에러: ', error);
     }
