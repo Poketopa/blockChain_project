@@ -924,11 +924,18 @@
                 kakaoLogin();  // 로그인 함수 호출
             });
 
+
+        // 로컬 스토리지 확인 버튼 클릭 이벤트
+        $('#check-storage-btn').on('click', function() {
+                checkLocalStorage();  // 로컬 스토리지 데이터 확인
+            });            
+	    
         // 로컬 스토리지 확인 버튼 클릭 이벤트
         $('#check-storage-btn').on('click', function() {
                 checkLocalStorage();  // 로컬 스토리지 데이터 확인
             });
-        });
+        });     
+        
     </script>
 </head>
 <body>
@@ -954,11 +961,12 @@
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
+            <button id="clearLocalStorageBtn" class="btn btn-danger ml-2">로그아웃</button>
         </form>
       
         <!-- 카카오톡 로그인 버튼 -->
         <div style="margin-top: 20px;">
-            <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>
+            <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>         
         </div>
 
         <!-- 사용자 ID 표시 영역 -->
