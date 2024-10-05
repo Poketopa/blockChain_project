@@ -101,19 +101,18 @@ const App = {
 };
 
 //페이지 로딩되면
+
 $(function () {
   //로그인 되었는지 확인
   let privatekey = localStorage.getItem('privateKey');
   let publickey = localStorage.getItem('walletAddress');
   if (!App.checkLogin(privatekey, publickey)) {
     // 로그인 메시지 보여주기
-    const userMessage = document.getElementById('userMessage');
-    if (userMessage) {
-      userMessage.style.display = 'block'; // 메시지를 표시
-    }
+    $('#userMessage').css('display', 'block'); // 메시지를 표시
     return; // 이후 동작은 멈춤
+  } else {
+    $('#userMessage').css('display', 'none'); // 로그인 성공 시 메시지 숨기기
   }
-
   let filename;
   let uploadFile;
   $('#mintButton').hide();
