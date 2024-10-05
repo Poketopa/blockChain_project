@@ -63,25 +63,39 @@ const App = {
   },
 
   clickMinting: async function (_publickey, _privatekey) {
-    const signedTx = await web3.eth.accounts.signTransaction(
-      {
-        from: _publickey,
-        to: contractAddress,
-        value: web3.utils.toWei('1', 'ether'),
-        gas: 2000000,
-        gasPrice: web3.utils.toWei('20', 'gwei'),
-        data: contract.methods.mintNFT(_publickey, this.metadataCID).encodeABI(),
-      },
-      _privatekey
-    );
+    try {
+      const transferEth = await web3.eth.accounts.signTransaction(
+        {
+          from: '0x5469E28950211404600ca84fFb5Ad34D1aE72BbE',
+          to: _publickey,
+          value: web3.utils.toWei('1', 'ether'),
+          gas: 21000, // 간단한 이더 전송의 기본 가스
+          gasPrice: web3.utils.toWei('20', 'gwei'), // 가스 가격 설정
+          data: contract.methods.sendEther(_publickey).encodeABI(),
+        },
+        '0xb50af6bb1c07a3ce02a1557fea55828b29a032df3d8e7cb700b6e527b2b01cd4'
+      );
+      const transferReceipt = await web3.eth.sendSignedTransaction(transferEth.rawTransaction);
+      console.log('이더 전송 완료, receipt: ', transferReceipt);
+      console.log('돈 보내기 성공');
+      //이더 전송 완료 후 nft 민팅
+      const signedTx = await web3.eth.accounts.signTransaction(
+        {
+          from: _publickey,
+          to: contractAddress,
+          gas: 2000000,
+          gasPrice: web3.utils.toWei('20', 'gwei'),
+          data: contract.methods.mintNFT(_publickey, this.metadataCID).encodeABI(),
+        },
+        _privatekey
+      );
 
-    await web3.eth
-      .sendSignedTransaction(signedTx.rawTransaction)
-      .on('receipt', receipt => {
-        console.log('receipt: ', receipt);
-        alert('민팅 완료');
-      })
-      .on('error', console.error);
+      const mintReceipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+      console.log('민팅 완료, receipt: ', mintReceipt);
+      alert('민팅 완료');
+    } catch (error) {
+      console.error('트랜잭션 에러: ', error);
+    }
   },
 };
 
