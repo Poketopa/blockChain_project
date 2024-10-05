@@ -113,7 +113,7 @@ $(function () {
     }
   });
 
-  $('#mintButton').on('click', async function () {
+  $('#mintButton').on('click', function () {
     App.clickMinting(publickey, privatekey);
   });
 });
