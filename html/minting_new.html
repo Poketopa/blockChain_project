@@ -88,7 +88,7 @@
             text-decoration: underline;
         }
 
-        .alertbox{
+        .alertbox {
             background-color: #fff3cd;
         }
 
@@ -183,7 +183,13 @@
 
     <div class="container">
         <div class="container">
-
+            <div class="col-12 py-3 my-3 alertbox" style="display: none;" id="userMessage">
+                <div role="alert">
+                </div>
+                로그인 해주세요
+                <br>
+                <a href="./login_new.html" class="btn btn-link">로그인 페이지로 이동</a>
+            </div>
             <div class="box-body">
                 <div class="col-12 py-3 my-3">
                     <!-- 파일 -->
@@ -203,13 +209,7 @@
                 <div class="col-12 py-3 my-3">
                     <p id="result"></p>
                 </div>
-                <div class="col-12 py-3 my-3 alertbox">
-                    <div id="userMessage" role="alert" style="display: none;">
-                    </div>
-                    로그인 해주세요
-                    <br>
-                    <a href="./login_new.html" class="btn btn-link">로그인 페이지로 이동</a>
-                </div>
+
             </div>
             <div>
                 <button class="btn btn-danger" id="mintButton">NFT 발행</button>
