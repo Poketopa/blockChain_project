@@ -934,8 +934,18 @@
         $('#check-storage-btn').on('click', function() {
                 checkLocalStorage();  // 로컬 스토리지 데이터 확인
             });
-        });     
-        
+            
+    // 로컬 스토리지 삭제 버튼 클릭 이벤트 리스너
+    document.getElementById("clearLocalStorageBtn").addEventListener("click", function() {
+    localStorage.removeItem("walletAddress");
+    localStorage.removeItem("privateKey");
+
+    alert("로그아웃되었습니다"); 
+     // 화면 새로고침
+     location.reload();  
+  }); 
+}); 
+
     </script>
 </head>
 <body>
@@ -960,13 +970,13 @@
                 <label for="username">Username:</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-            <button id="clearLocalStorageBtn" class="btn btn-danger ml-2">로그아웃</button>
+            <button type="submit" class="btn btn-primary">Login</button>            
         </form>
       
         <!-- 카카오톡 로그인 버튼 -->
         <div style="margin-top: 20px;">
             <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>         
+            <button id="clearLocalStorageBtn" class="btn btn-danger ml-2">로그아웃</button>
         </div>
 
         <!-- 사용자 ID 표시 영역 -->
