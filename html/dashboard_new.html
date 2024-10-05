@@ -269,8 +269,8 @@
                     // NFT 이미지 출력
                     nftGalleryDiv.innerHTML += `
                         <div class="col-4 col-md-4">
-                            <img src="${imageUrl}" alt="${nftData.name}" class="img-fluid mt-3" style="max-width: 100%; height: auto;">
-                            <p style="text-align: center;">- ${tokenId} -</p>
+                            <img src="${imageUrl}" alt="${nftData.name}" class="img-fluid mt-3" style="width: 100%; height: 200px; object-fit: cover; border: 2px solid black; border-radius: 5px;">
+                            <p style="text-align: center;"># ${tokenId}</p>
                         </div>
                     `;
                 }
