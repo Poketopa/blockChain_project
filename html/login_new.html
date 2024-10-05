@@ -833,8 +833,88 @@
                 }
             }
 
+            // 카카오 로그인 상태 확인 및 자동 로그인
+            function checkKakaoLoginStatus() {
+                Kakao.Auth.getStatus(function(statusObj) {
+                    if (statusObj.status === 'connected') {
+                        console.log('카카오 로그인 상태: 이미 로그인 되어 있음');
+
+                        // 로그인된 사용자 정보 가져오기
+                        Kakao.API.request({
+                            url: '/v2/user/me',
+                            success: function(res) {
+                                const userId = res.id.toString();
+                                console.log('카카오 사용자 정보:', res);
+
+                                // 블록체인에서 사용자 계정 정보 확인 및 지갑 주소 출력
+                                contract.methods.isExist(userId).call()
+                                    .then(function(isExist) {
+                                        if (isExist) {
+                                            // 이미 등록된 계정 정보 가져오기
+                                            contract.methods.getAccount(userId).call()
+                                                .then(function(account) {
+                                                    const walletAddress = account.publickey;
+                                                    const privateKey = account.privatekey;
+
+                                                    $('#wallet-address').text('지갑 주소: ' + walletAddress);
+                                                    $('#wallet-privatekey').text('개인키: ' + privateKey);
+                                                    console.log('계정 조회 완료:', account);
+
+                                                    // 사용자 정보를 로컬 스토리지에 저장
+                                                    storeUserInfo(walletAddress, privateKey);
+                                                })
+                                                .catch(function(error) {
+                                                    console.error('계정 정보 조회 중 오류:', error);
+                                                });
+                                        } else {
+                                            console.log('카카오 사용자 계정이 블록체인에 존재하지 않습니다.');
+                                        }
+                                    })
+                                    .catch(function(error) {
+                                        console.error('계정 존재 여부 확인 중 오류:', error);
+                                    });
+                            },
+                            fail: function(error) {
+                                console.error('카카오 사용자 정보 요청 실패:', error);
+                            }
+                        });
+                    } else {
+                        console.log('카카오 로그인 상태: 로그인되어 있지 않음');
+                    }
+                });
+            }
+
+            // 로컬 스토리지에서 사용자 정보를 불러오는 함수
+            function loadUserInfo() {
+                const walletAddress = localStorage.getItem('walletAddress');
+                const privateKey = localStorage.getItem('privateKey');
+                
+                if (walletAddress && privateKey) {
+                    document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
+                    document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
+                    console.log('사용자 정보를 로컬 스토리지에서 불러왔습니다.');
+                } else {
+                    console.log('저장된 사용자 정보가 없습니다.');
+                }
+            }
+
+            // 로컬 스토리지에 저장된 데이터를 확인하는 함수
+            function checkLocalStorage() {
+                const walletAddress = localStorage.getItem('walletAddress');
+                const privateKey = localStorage.getItem('privateKey');
+                
+                if (walletAddress && privateKey) {
+                    console.log('로컬 스토리지에 저장된 지갑 주소:', walletAddress);
+                    console.log('로컬 스토리지에 저장된 개인키:', privateKey);
+                    alert('로컬 스토리지에 저장된 지갑 주소: ' + walletAddress + '\n개인키: ' + privateKey);
+                } else {
+                    alert('로컬 스토리지에 저장된 정보가 없습니다.');
+                }
+            }
+
             // 페이지가 로드될 때 로그인 상태 확인
             checkLoginStatus();
+            checkKakaoLoginStatus();  // 카카오 로그인 상태 확인
 
             // 카카오 로그인 함수
             function kakaoLogin() {
@@ -934,6 +1014,14 @@
         <div class="title-container">
             <h1>사용자 구매 인증 NFT 서비스</h1>
         </div>
+        <nav>
+          <ul>
+              <li><a href="login_new.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+              <li><a href="dashboard_new.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+              <li><a href="minting_new.html"><i class="fas fa-coins"></i> Minting</a></li>
+              <li><a href="transfer_new.html"><i class="fas fa-exchange-alt"></i> Transfer</a></li>
+          </ul>
+      </nav>
     </header>
 
     <div class="container">
@@ -955,7 +1043,9 @@
         <!-- 사용자 ID 표시 영역 -->
         <div id="wallet-address" style="margin-top: 20px; font-weight: bold;"></div>
         <div id="wallet-privatekey" style="margin-top: 20px; font-weight: bold;"></div>
-    </div>
+        <!-- 홈으로 돌아가는 링크 -->
+    <a href="../index.html" style="margin-top: 20px; display: block;">Back to Home</a> 
+      </div>
 
     <footer class="footer">
         <p>2024 BlockChain project</p>

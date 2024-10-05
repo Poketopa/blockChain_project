@@ -724,7 +724,6 @@
             const contract = new web3.eth.Contract(contractABI, contractAddress);
             let newAccount = null;  // 지갑 정보를 한 번만 생성하고 저장할 변수
 
-
             // 사용자 정보를 로컬 스토리지에 저장하는 함수
             function storeUserInfo(walletAddress, privateKey) {
                 localStorage.setItem('walletAddress', walletAddress);
@@ -732,6 +731,9 @@
                 console.log('사용자 정보가 로컬 스토리지에 저장되었습니다.');
                 console.log('저장된 지갑 주소:', localStorage.getItem('walletAddress'));
                 console.log('저장된 개인키:', localStorage.getItem('privateKey'));
+
+                // 로그인 성공 후 UI 업데이트
+                updateUIAfterLogin();
             }
 
             // 로그인 폼이 제출될 때 처리할 함수
@@ -801,9 +803,35 @@
                     });
             });
 
+            // 로그인 후 UI를 업데이트하는 함수
+            function updateUIAfterLogin() {
+                // 로그인 성공 후 입력 필드와 버튼 숨기기
+                $('#username').hide();
+                $('#login-submit').hide();
+                $('#username-label').hide(); // "Username:" 레이블 숨기기
+                $('#kakao-login-btn').hide();
+                $('#clearLocalStorageBtn').show(); // 로그아웃 버튼 보이기
+            }
 
+            // 로그아웃 처리 함수
+            function logout() {
+                localStorage.removeItem('walletAddress');
+                localStorage.removeItem('privateKey');
+                alert('로그아웃되었습니다.');
 
-            
+                // 화면 새로고침 및 UI 업데이트
+                location.reload();
+            }
+
+            // 로그인 상태 확인 함수
+            function checkLoginStatus() {
+                const walletAddress = localStorage.getItem('walletAddress');
+                if (walletAddress) {
+                    updateUIAfterLogin();  // 로그인 상태이면 UI 업데이트
+                } else {
+                    $('#clearLocalStorageBtn').hide();  // 로그아웃 버튼 숨기기
+                }
+            }
 
             // 로컬 스토리지에서 사용자 정보를 불러오는 함수
             function loadUserInfo() {
@@ -833,9 +861,9 @@
                 }
             }
 
-            // 페이지가 로드될 때 로컬 스토리지에서 사용자 정보 불러오기
-            loadUserInfo();
-            
+            // 페이지가 로드될 때 로그인 상태 확인
+            checkLoginStatus();
+
             // 카카오 로그인 함수
             function kakaoLogin() {
                 Kakao.Auth.login({
@@ -924,79 +952,51 @@
                 kakaoLogin();  // 로그인 함수 호출
             });
 
-
-        // 로컬 스토리지 확인 버튼 클릭 이벤트
-        $('#check-storage-btn').on('click', function() {
-                checkLocalStorage();  // 로컬 스토리지 데이터 확인
-            });            
-	    
-        // 로컬 스토리지 확인 버튼 클릭 이벤트
-        $('#check-storage-btn').on('click', function() {
-                checkLocalStorage();  // 로컬 스토리지 데이터 확인
-            });
-            
-    // 로컬 스토리지 삭제 버튼 클릭 이벤트 리스너
-    document.getElementById("clearLocalStorageBtn").addEventListener("click", function() {
-    localStorage.removeItem("walletAddress");
-    localStorage.removeItem("privateKey");
-
-    alert("로그아웃되었습니다"); 
-     // 화면 새로고침
-     location.reload();  
-  }); 
-}); 
-
+            // 로그아웃 버튼 클릭 이벤트 리스너
+            $('#clearLocalStorageBtn').on('click', logout);
+        });
     </script>
 </head>
 <body>
     <header class="header">
         <div class="title-container">
-            <h1>사용자 구매 인증 NFT 서비스</h1> <!-- 타이틀 -->
+            <h1>사용자 구매 인증 NFT 서비스</h1>
         </div>
         <nav>
-            <ul>
-                <li><a href="login_new.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                <li><a href="dashboard_new.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="minting_new.html"><i class="fas fa-coins"></i> Minting</a></li>
-                <li><a href="transfer_new.html"><i class="fas fa-exchange-alt"></i> Transfer</a></li>
-            </ul>
-        </nav>
+          <ul>
+              <li><a href="login_new.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+              <li><a href="dashboard_new.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+              <li><a href="minting_new.html"><i class="fas fa-coins"></i> Minting</a></li>
+              <li><a href="transfer_new.html"><i class="fas fa-exchange-alt"></i> Transfer</a></li>
+          </ul>
+      </nav>
     </header>
 
     <div class="container">
         <!-- 일반 로그인 폼 -->
         <form action="/login" method="POST">
             <div class="form-group">
-                <label for="username">Username:</label>
+                <label for="username" id="username-label">Username:</label> <!-- Username 레이블 -->
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>            
+            <button type="submit" class="btn btn-primary" id="login-submit">Login</button>
         </form>
       
         <!-- 카카오톡 로그인 버튼 -->
         <div style="margin-top: 20px;">
-            <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>         
-            <button id="clearLocalStorageBtn" class="btn btn-danger ml-2">로그아웃</button>
+            <button id="kakao-login-btn" class="btn btn-warning">카카오톡으로 로그인</button>
+            <button id="clearLocalStorageBtn" class="btn btn-danger ml-2" style="display: none;">로그아웃</button> <!-- 기본 숨김 상태 -->
         </div>
 
         <!-- 사용자 ID 표시 영역 -->
-        <div id="user-id-display" style="margin-top: 20px; font-weight: bold;"></div>
-
-        <!-- 사용자 Wallet 표시 영역 -->
         <div id="wallet-address" style="margin-top: 20px; font-weight: bold;"></div>
-
-        <!-- 사용자 Private Key 표시 영역 -->
         <div id="wallet-privatekey" style="margin-top: 20px; font-weight: bold;"></div>
-
-        <!-- 로컬 스토리지 확인 버튼 -->
-        <!--<button id="check-storage-btn" class="btn btn-info" style="margin-top: 20px;">로컬 스토리지 확인</button>-->
-
         <!-- 홈으로 돌아가는 링크 -->
-        <a href="../index.html" style="margin-top: 20px; display: block;">Back to Home</a> 
-    </div>
+    <a href="../index.html" style="margin-top: 20px; display: block;">Back to Home</a> 
+      </div>
+
     <footer class="footer">
         <p>2024 BlockChain project</p>
     </footer>
-
 </body>
 </html>
