@@ -92,7 +92,7 @@ $(function () {
   let publickey = localStorage.getItem('walletAddress');
   if (!App.checkLogin(privatekey, publickey)) {
     alert('로그인 먼저 해주세요');
-    location.href = 'login.html';
+    location.href = 'login_new.html';
   }
 
   let filename;
