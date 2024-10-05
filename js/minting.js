@@ -105,8 +105,12 @@ $(function () {
   let privatekey = localStorage.getItem('privateKey');
   let publickey = localStorage.getItem('walletAddress');
   if (!App.checkLogin(privatekey, publickey)) {
-    alert('로그인 먼저 해주세요');
-    location.href = 'login_new.html';
+    // 로그인 메시지 보여주기
+    const userMessage = document.getElementById('userMessage');
+    if (userMessage) {
+      userMessage.style.display = 'block'; // 메시지를 표시
+    }
+    return; // 이후 동작은 멈춤
   }
 
   let filename;
