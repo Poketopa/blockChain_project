@@ -833,6 +833,34 @@
                 }
             }
 
+            // 로컬 스토리지에서 사용자 정보를 불러오는 함수
+            function loadUserInfo() {
+                const walletAddress = localStorage.getItem('walletAddress');
+                const privateKey = localStorage.getItem('privateKey');
+                
+                if (walletAddress && privateKey) {
+                    document.getElementById('wallet-address').textContent = '지갑 주소: ' + walletAddress;
+                    document.getElementById('wallet-privatekey').textContent = '개인키: ' + privateKey;
+                    console.log('사용자 정보를 로컬 스토리지에서 불러왔습니다.');
+                } else {
+                    console.log('저장된 사용자 정보가 없습니다.');
+                }
+            }
+
+            // 로컬 스토리지에 저장된 데이터를 확인하는 함수
+            function checkLocalStorage() {
+                const walletAddress = localStorage.getItem('walletAddress');
+                const privateKey = localStorage.getItem('privateKey');
+                
+                if (walletAddress && privateKey) {
+                    console.log('로컬 스토리지에 저장된 지갑 주소:', walletAddress);
+                    console.log('로컬 스토리지에 저장된 개인키:', privateKey);
+                    alert('로컬 스토리지에 저장된 지갑 주소: ' + walletAddress + '\n개인키: ' + privateKey);
+                } else {
+                    alert('로컬 스토리지에 저장된 정보가 없습니다.');
+                }
+            }
+
             // 페이지가 로드될 때 로그인 상태 확인
             checkLoginStatus();
 
@@ -934,6 +962,14 @@
         <div class="title-container">
             <h1>사용자 구매 인증 NFT 서비스</h1>
         </div>
+        <nav>
+          <ul>
+              <li><a href="login_new.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+              <li><a href="dashboard_new.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+              <li><a href="minting_new.html"><i class="fas fa-coins"></i> Minting</a></li>
+              <li><a href="transfer_new.html"><i class="fas fa-exchange-alt"></i> Transfer</a></li>
+          </ul>
+      </nav>
     </header>
 
     <div class="container">
@@ -955,7 +991,9 @@
         <!-- 사용자 ID 표시 영역 -->
         <div id="wallet-address" style="margin-top: 20px; font-weight: bold;"></div>
         <div id="wallet-privatekey" style="margin-top: 20px; font-weight: bold;"></div>
-    </div>
+        <!-- 홈으로 돌아가는 링크 -->
+    <a href="../index.html" style="margin-top: 20px; display: block;">Back to Home</a> 
+      </div>
 
     <footer class="footer">
         <p>2024 BlockChain project</p>
